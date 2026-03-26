@@ -1,0 +1,245 @@
+Project - Pocket Buddy - Pocket Partner for Better Financial Planning
+
+Build a full-stack AI-powered WealthTech web application that provides personalized financial recommendations, real-time insights, and an AI chatbot for user queries.
+
+---
+
+## 🎯 PROJECT GOAL
+
+Create a scalable platform where users can:
+
+* Sign up / log in securely
+* Enter financial and personal data
+* Receive AI-driven personalized investment recommendations
+* View real-time financial insights (stocks, mutual funds, etc.)
+* Interact with an AI chatbot for financial queries
+
+---
+
+## 🧩 SYSTEM ARCHITECTURE
+
+### Frontend:
+
+* Framework: React.js (Functional components + Hooks)
+* Styling: Traditional CSS (no Tailwind or frameworks)
+* State Management: Context API or Redux
+* Routing: React Router
+
+### Backend:
+
+* Framework: FastAPI (Python)
+* API Style: RESTful APIs
+* Authentication: JWT-based authentication
+
+### Database:
+
+* MongoDB (NoSQL)
+* Use PyMongo or Motor for async DB handling
+
+### AI/ML Components:
+
+* Recommendation Engine (Hybrid: Rule-based + ML-based)
+* Chatbot (LLM API or local model)
+* Real-time data scraper (financial APIs or scraping)
+
+---
+
+## 🔐 AUTHENTICATION MODULE
+
+* User registration (email + password)
+* Secure password hashing (bcrypt)
+* JWT login system
+* Role: Basic user (extendable)
+
+---
+
+## 👤 USER PROFILE COLLECTION
+
+After login, collect:
+
+* Age
+* Income
+* Savings
+* Risk appetite (low/medium/high)
+* Financial goals (short-term / long-term)
+* Investment preferences
+
+Store this in MongoDB.
+
+---
+
+## 🧠 PERSONALIZATION ENGINE
+
+### Phase 1 (Rule-Based Logic):
+
+* If risk = low → suggest bonds, low-risk mutual funds
+* If risk = high → suggest stocks, aggressive portfolios
+* If goal = short-term → liquid funds
+* If goal = long-term → equity funds
+
+### Phase 2 (Advanced ML):
+
+* Use clustering (K-Means) to group users
+* Collaborative filtering for recommendations
+* Portfolio optimization logic
+
+---
+
+## 📊 RECOMMENDATION SYSTEM (DETAILED)
+
+Implement a hybrid system:
+
+### Inputs:
+
+* User profile
+* Market data (real-time)
+* Historical performance
+
+### Logic:
+
+* Risk scoring formula
+* Asset allocation model
+* Diversification strategy
+
+### Output:
+
+* Personalized portfolio:
+
+  * % allocation (stocks, bonds, mutual funds)
+  * Specific recommendations
+  * Expected return vs risk
+
+---
+
+## 🌐 REAL-TIME DATA INTEGRATION
+
+* Fetch stock/mutual fund data using:
+
+  * APIs (preferred) OR
+  * Web scraping (BeautifulSoup / Scrapy)
+
+* Update data periodically using:
+
+  * Background tasks (FastAPI + Celery or asyncio)
+
+---
+
+## 🤖 AI CHATBOT MODULE
+
+### Features:
+
+* Answer user queries like:
+
+  * “Where should I invest?”
+  * “Is this stock good?”
+* Context-aware responses using user profile
+* Use:
+
+  * OpenAI API OR
+  * Local LLM (optional)
+
+### Integration:
+
+* Chat UI in frontend
+* Backend endpoint for query handling
+
+---
+
+## 🎨 FRONTEND UI REQUIREMENTS
+
+### Pages:
+
+1. Login / Signup
+2. Dashboard
+3. Profile Setup
+4. Recommendations Page
+5. Market Insights Page
+6. Chatbot Interface
+
+### UI Features:
+
+* Clean, modern layout
+* Responsive design
+* Graphs (use Chart.js or Recharts)
+* Cards for recommendations
+
+---
+
+## 🔌 API DESIGN (FastAPI)
+
+Create endpoints:
+
+* /auth/register
+* /auth/login
+* /user/profile
+* /recommendations
+* /market-data
+* /chatbot/query
+
+---
+
+## ⚙️ BACKEND STRUCTURE
+
+* app/
+
+  * main.py
+  * routes/
+  * models/
+  * services/
+  * utils/
+  * database/
+
+---
+
+## 🧪 TESTING
+
+* Unit tests for API
+* Test recommendation logic
+* Validate chatbot responses
+
+---
+
+## 📈 SCALABILITY CONSIDERATIONS
+
+* Use async FastAPI
+* Optimize MongoDB queries
+* Cache frequently accessed data
+* Modular architecture
+
+---
+
+## 📘 README REQUIREMENTS
+
+Include:
+
+* Problem statement
+* Solution overview
+* Architecture diagram
+* Tech stack
+* Setup instructions
+* API documentation
+* Future improvements
+
+---
+
+## 🎯 FINAL OUTPUT
+
+The system should:
+
+* Provide real-time, personalized financial advice
+* Be scalable to thousands of users
+* Demonstrate AI + Full-stack integration
+* Be production-ready in structure
+
+---
+
+## 🚀 BONUS FEATURES (OPTIONAL)
+
+* Portfolio tracking
+* Notifications (price alerts)
+* Risk simulation dashboard
+* Voice-based chatbot
+
+---
+
+Build the project step-by-step with clean, modular, production-quality code. Ensure proper separation of concerns, reusable components, and maintainable architecture.

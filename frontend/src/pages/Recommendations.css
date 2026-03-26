@@ -1,0 +1,237 @@
+.recommendations-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.recommendations-page h1 {
+  font-size: 28px;
+  font-weight: 700;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 15px;
+  margin-bottom: 32px;
+}
+
+.subtitle strong {
+  color: var(--accent-secondary);
+}
+
+.no-profile {
+  text-align: center;
+  padding: 60px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.no-profile h2 {
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.no-profile p {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.no-profile .btn-primary {
+  display: inline-block;
+  width: auto;
+  padding: 12px 32px;
+  text-decoration: none;
+}
+
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.recommendation-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: var(--transition);
+}
+
+.recommendation-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow);
+}
+
+.recommendation-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Allocation Chart */
+.allocation-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.allocation-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.allocation-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.allocation-bar {
+  height: 8px;
+  background: var(--glass);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.allocation-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+.allocation-fill.bonds { background: linear-gradient(90deg, #10b981, #34d399); }
+.allocation-fill.stocks { background: linear-gradient(90deg, #6366f1, #818cf8); }
+.allocation-fill.mutual_funds { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+.allocation-fill.liquid { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+
+/* Specific Recommendations */
+.specific-recommendations {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rec-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+
+.rec-item:hover {
+  background: rgba(99, 102, 241, 0.05);
+  border-color: var(--border-hover);
+}
+
+.rec-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.rec-category {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  text-transform: capitalize;
+}
+
+.rec-return {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--success);
+  text-align: right;
+}
+
+.rec-risk {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-align: right;
+  margin-top: 2px;
+}
+
+.rec-risk.low { color: var(--success); background: var(--success-bg); }
+.rec-risk.medium { color: var(--warning); background: rgba(245, 158, 11, 0.1); }
+.rec-risk.high { color: var(--danger); background: var(--danger-bg); }
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 16px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-secondary);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.investment-suggestion {
+  text-align: center;
+  padding: 20px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: var(--radius);
+}
+
+.suggestion-amount {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent-secondary);
+}
+
+.suggestion-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Diversification */
+.recommendation-card p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.recommendation-card p strong {
+  color: var(--text-primary);
+}
