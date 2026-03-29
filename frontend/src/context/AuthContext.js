@@ -7,22 +7,34 @@ const API_URL = 'http://localhost:8000';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
+
+  const fetchProfile = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API_URL}/user/profile`);
+      setProfile(response.data.profile);
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  }, []);
 
   const fetchUser = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/auth/me`);
       setUser(response.data);
+      await fetchProfile();
     } catch (error) {
       localStorage.removeItem('token');
       setToken(null);
       setUser(null);
+      setProfile(null);
       delete axios.defaults.headers.common['Authorization'];
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [fetchProfile]);
 
   useEffect(() => {
     if (token) {
@@ -70,7 +82,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, profile, fetchProfile, login, register, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

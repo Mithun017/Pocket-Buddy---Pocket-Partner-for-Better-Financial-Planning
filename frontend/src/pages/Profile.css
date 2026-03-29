@@ -145,3 +145,40 @@
   cursor: not-allowed;
   transform: none;
 }
+
+.profile-footer {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.footer-note {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.btn-logout-alt {
+  width: 100%;
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-logout-alt:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: var(--danger);
+  transform: translateY(-1px);
+}
+
