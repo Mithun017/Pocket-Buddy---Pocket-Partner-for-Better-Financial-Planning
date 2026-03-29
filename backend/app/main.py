@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.database import connect_db, close_db
-from app.routes import auth, user, recommendations, market, chatbot
+from app.routes import auth, user, recommendations, market, chatbot, quantel
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,7 +22,12 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React frontend
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001", # Common alternate React ports
+        "http://127.0.0.1:3001"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -34,6 +39,7 @@ app.include_router(user.router)
 app.include_router(recommendations.router)
 app.include_router(market.router)
 app.include_router(chatbot.router)
+app.include_router(quantel.router)
 
 @app.get("/")
 async def root():

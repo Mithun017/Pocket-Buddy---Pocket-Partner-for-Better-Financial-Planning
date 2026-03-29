@@ -16,7 +16,7 @@ const Recommendations = () => {
 
   const fetchRecommendations = async () => {
     try {
-      const response = await axios.get(`${API_URL}/recommendations/`);
+      const response = await axios.get(`${API_URL}/recommendations`);
       setRecommendations(response.data);
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to load recommendations');

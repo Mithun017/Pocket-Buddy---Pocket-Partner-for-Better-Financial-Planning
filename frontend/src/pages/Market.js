@@ -17,14 +17,27 @@ const Market = () => {
 
   const fetchMarketData = async () => {
     try {
-      const [indicesRes, trendingRes] = await Promise.all([
-        axios.get(`${API_URL}/market/indices`),
-        axios.get(`${API_URL}/market/trending`)
-      ]);
-      setIndices(indicesRes.data);
-      setTrending(trendingRes.data.trending);
-    } catch (error) {
-      console.error('Error fetching market data:', error);
+      const fetchIndices = async () => {
+        try {
+          const res = await axios.get(`${API_URL}/market/indices`);
+          setIndices(res.data);
+        } catch (e) { 
+          console.error('Market Indices Error:', e);
+          setIndices({}); // Fallback
+        }
+      };
+
+      const fetchTrending = async () => {
+        try {
+          const res = await axios.get(`${API_URL}/market/trending`);
+          setTrending(res.data.trending || []);
+        } catch (e) { 
+          console.error('Market Trending Error:', e);
+          setTrending([]); // Fallback
+        }
+      };
+
+      await Promise.allSettled([fetchIndices(), fetchTrending()]);
     } finally {
       setLoading(false);
     }

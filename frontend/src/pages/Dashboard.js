@@ -18,12 +18,22 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [marketRes, profileRes] = await Promise.all([
-        axios.get(`${API_URL}/market/indices`),
-        axios.get(`${API_URL}/user/profile`)
-      ]);
-      setMarketData(marketRes.data);
-      setProfile(profileRes.data);
+      // Individual try-catch for each fetch to prevent one failure from blocking others
+      const fetchMarket = async () => {
+        try {
+          const res = await axios.get(`${API_URL}/market/indices`);
+          setMarketData(res.data);
+        } catch (e) { console.error('Dashboard Market Error:', e); }
+      };
+
+      const fetchUserProf = async () => {
+        try {
+          const res = await axios.get(`${API_URL}/user/profile`);
+          setProfile(res.data);
+        } catch (e) { console.error('Dashboard Profile Error:', e); }
+      };
+
+      await Promise.allSettled([fetchMarket(), fetchUserProf()]);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {

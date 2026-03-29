@@ -10,7 +10,8 @@ class ChatbotService:
         self.model = None
         if settings.gemini_api_key:
             genai.configure(api_key=settings.gemini_api_key)
-            self.model = genai.GenerativeModel("gemini-2.0-flash")
+            # Use gemini-1.5-flash for better compatibility with current SDK
+            self.model = genai.GenerativeModel("gemini-1.5-flash")
 
     async def process_query(self, query: str, user_id: str, conversation_history: List[Dict] = None) -> Dict:
         """Process user query and return AI response"""
@@ -62,16 +63,23 @@ class ChatbotService:
 
         full_prompt = "\n\n".join(conversation_parts)
 
-        # Call Gemini API
-        response = self.model.generate_content(
-            full_prompt,
-            generation_config=genai.types.GenerationConfig(
-                temperature=0.7,
-                max_output_tokens=500,
+        # Call Gemini API asynchronously
+        try:
+            # Note: in modern google-generativeai, it's just generate_content
+            # but we can use asyncio.to_thread for safety if not using the async sdk variant
+            import asyncio
+            response = await asyncio.to_thread(
+                self.model.generate_content,
+                full_prompt,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=0.7,
+                    max_output_tokens=500,
+                )
             )
-        )
-
-        return response.text
+            return response.text
+        except Exception as e:
+            print(f"Error calling Gemini: {e}")
+            raise e
 
     def _build_context(self, profile: Dict) -> str:
         """Build context from user profile"""

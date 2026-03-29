@@ -11,6 +11,7 @@ const ChatWidget = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -42,9 +43,10 @@ const ChatWidget = () => {
         timestamp: new Date()
       }]);
     } catch (error) {
+      console.error('Chat Error:', error);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: 'I am having trouble connecting to my brain right now. Please try again soon.',
         timestamp: new Date()
       }]);
     } finally {

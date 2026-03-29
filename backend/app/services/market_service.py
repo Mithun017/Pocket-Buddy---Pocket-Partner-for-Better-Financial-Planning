@@ -120,9 +120,16 @@ class MarketDataService:
         }
 
         loop = asyncio.get_event_loop()
-        result = {}
+        
+        # Parallel fetch for indices
+        tasks = []
         for name, symbol in index_symbols.items():
-            data = await loop.run_in_executor(executor, self._fetch_index_sync, symbol)
+            tasks.append(loop.run_in_executor(executor, self._fetch_index_sync, symbol))
+        
+        results_list = await asyncio.gather(*tasks)
+        
+        result = {}
+        for (name, _), data in zip(index_symbols.items(), results_list):
             if data:
                 result[name] = data
 
@@ -150,14 +157,18 @@ class MarketDataService:
         ]
 
         loop = asyncio.get_event_loop()
-        results = []
-
+        
+        # Parallel fetch for stocks
+        tasks = []
         for stock_info in trending_symbols:
-            data = await loop.run_in_executor(
-                executor, self._fetch_stock_sync, stock_info["symbol"]
-            )
+            tasks.append(loop.run_in_executor(executor, self._fetch_stock_sync, stock_info["symbol"]))
+        
+        results_list = await asyncio.gather(*tasks)
+        
+        final_results = []
+        for stock_info, data in zip(trending_symbols, results_list):
             if data:
-                results.append({
+                final_results.append({
                     "symbol": stock_info["display"],
                     "name": data.get("name", stock_info["display"]),
                     "sector": data.get("sector", "N/A"),
@@ -168,8 +179,8 @@ class MarketDataService:
                     "day_low": data.get("day_low", 0),
                 })
 
-        self._set_cache(cache_key, results)
-        return results
+        self._set_cache(cache_key, final_results)
+        return final_results
 
     async def search_instruments(self, query: str) -> list:
         """Search for stocks/funds on NSE"""

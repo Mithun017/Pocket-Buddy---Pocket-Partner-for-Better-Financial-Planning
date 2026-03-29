@@ -8,7 +8,6 @@ const API_URL = 'http://localhost:8000';
 
 const Profile = () => {
   const { user, fetchProfile, logout } = useAuth();
-  const navigate = useNavigate(); // Keep navigate if needed for other purposes, though not for redirect after save
   const [profile, setProfile] = useState({
     age: '',
     income: '',
@@ -21,13 +20,7 @@ const Profile = () => {
   const [message, setMessage] = useState('');
 
   const investmentOptions = [
-    'Stocks',
-    'Mutual Funds',
-    'Bonds',
-    'Fixed Deposits',
-    'Real Estate',
-    'Gold',
-    'Cryptocurrency'
+    'Stocks', 'Mutual Funds', 'Bonds', 'Fixed Deposits', 'Real Estate', 'Gold', 'Cryptocurrency'
   ];
 
   useEffect(() => {
@@ -38,14 +31,27 @@ const Profile = () => {
     try {
       const response = await axios.get(`${API_URL}/user/profile`);
       if (response.data.profile) {
-        setProfile(response.data.profile);
+        // Ensure values are strings for input fields to avoid uncontrolled/controlled issues
+        const p = response.data.profile;
+        setProfile({
+          age: p.age ?? '',
+          income: p.income ?? '',
+          savings: p.savings ?? '',
+          risk_appetite: p.risk_appetite || 'medium',
+          financial_goals: p.financial_goals || 'long-term',
+          investment_preferences: p.investment_preferences || []
+        });
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
-      setMessage('Error fetching profile data.');
+      setMessage('New profile setup required.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleInputChange = (field, value) => {
+    setProfile(prev => ({ ...prev, [field]: value }));
   };
 
   const handleCheckbox = (preference) => {
@@ -59,28 +65,28 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Re-enable loading for save operation
+    setLoading(true);
 
     try {
       await axios.post(`${API_URL}/user/profile`, profile);
       setMessage('Profile updated successfully!');
-      await fetchProfile(); // Sync header
+      await fetchProfile(); // Sync global auth context
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
       console.error('Error saving profile:', error);
-      setMessage('Failed to save profile');
+      setMessage('Failed to save profile. Check connection.');
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <div className="loading">Loading profile...</div>;
+  if (loading) return <div className="loading">Loading your profile...</div>;
 
   return (
     <div className="profile-page">
       <h1>👤 My Financial Profile</h1>
       
-      {message && <div className="success-message">{message}</div>}
+      {message && <div className={`success-message ${message.includes('Failed') ? 'error' : ''}`}>{message}</div>}
 
       <div className="profile-form">
         <form onSubmit={handleSubmit}>
@@ -90,7 +96,8 @@ const Profile = () => {
               <input
                 type="number"
                 value={profile.age}
-                onChange={(e) => setProfile({ ...profile, age: e.target.value })}
+                onChange={(e) => handleInputChange('age', e.target.value)}
+                placeholder="Enter your age"
                 required
               />
             </div>
@@ -99,7 +106,8 @@ const Profile = () => {
               <input
                 type="number"
                 value={profile.income}
-                onChange={(e) => setProfile({ ...profile, income: e.target.value })}
+                onChange={(e) => handleInputChange('income', e.target.value)}
+                placeholder="e.g. 1000000"
                 required
               />
             </div>
@@ -111,7 +119,8 @@ const Profile = () => {
               <input
                 type="number"
                 value={profile.savings}
-                onChange={(e) => setProfile({ ...profile, savings: e.target.value })}
+                onChange={(e) => handleInputChange('savings', e.target.value)}
+                placeholder="e.g. 500000"
                 required
               />
             </div>
@@ -119,12 +128,12 @@ const Profile = () => {
               <label>Risk Appetite</label>
               <select
                 value={profile.risk_appetite}
-                onChange={(e) => setProfile({ ...profile, risk_appetite: e.target.value })}
+                onChange={(e) => handleInputChange('risk_appetite', e.target.value)}
                 required
               >
                 <option value="low">Low - Prefer safety over returns</option>
                 <option value="medium">Medium - Balanced approach</option>
-                <option value="high">High - Comfortable with volatility for higher returns</option>
+                <option value="high">High - Comfortable with volatility</option>
               </select>
             </div>
           </div>
@@ -133,7 +142,7 @@ const Profile = () => {
             <label>Financial Goals</label>
             <select
               value={profile.financial_goals}
-              onChange={(e) => setProfile({ ...profile, financial_goals: e.target.value })}
+              onChange={(e) => handleInputChange('financial_goals', e.target.value)}
               required
             >
               <option value="short-term">Short-term (Under 3 years)</option>
@@ -145,29 +154,26 @@ const Profile = () => {
             <label>Investment Preferences</label>
             <div className="checkbox-group">
               {investmentOptions.map(option => (
-                <div key={option} className="checkbox-item" onClick={() => handleCheckbox(option)}>
+                <div key={option} className={`checkbox-item ${profile.investment_preferences.includes(option) ? 'active' : ''}`} onClick={() => handleCheckbox(option)}>
                   <input
                     type="checkbox"
-                    id={option}
-                    value={option}
                     checked={profile.investment_preferences.includes(option)}
-                    readOnly // Make it readOnly as click handler is on div
+                    readOnly
                   />
-                  <label htmlFor={option}>{option}</label>
+                  <span>{option}</span>
                 </div>
               ))}
             </div>
           </div>
 
           <button type="submit" className="btn-submit" disabled={loading}>
-            {loading ? 'Saving...' : 'Save Profile Changes'}
+            {loading ? 'Processing...' : 'Save Profile Changes'}
           </button>
         </form>
 
         <div className="profile-footer">
-          <p className="footer-note">Manage your account and security</p>
           <button className="btn-logout-alt" onClick={logout}>
-            <span className="logout-icon">🚪</span> Sign Out of Pocket Buddy
+            🚪 Logout from Pocket Buddy
           </button>
         </div>
       </div>
