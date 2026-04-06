@@ -27,7 +27,3 @@ Thumbs.db
 dist/
 build/
 frontend/build/
-
-#prompts
-Masterprompt.txt 
-
