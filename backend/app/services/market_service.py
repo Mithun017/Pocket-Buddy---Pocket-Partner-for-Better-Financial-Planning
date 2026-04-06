@@ -55,6 +55,7 @@ class MarketDataService:
                 "day_low": round(float(info.get("dayLow", 0)), 2),
                 "fifty_two_week_high": round(float(info.get("fiftyTwoWeekHigh", 0)), 2),
                 "fifty_two_week_low": round(float(info.get("fiftyTwoWeekLow", 0)), 2),
+                "symbol": symbol.replace('.NS', '').replace('.BO', '')
             }
         except Exception as e:
             print(f"Error fetching {symbol}: {e}")
@@ -182,39 +183,68 @@ class MarketDataService:
         self._set_cache(cache_key, final_results)
         return final_results
 
+    async def get_market_movers(self) -> Dict:
+        """Calculate Gainers, Losers, and Sector Performance"""
+        cache_key = "market_movers"
+        if self._is_cache_valid(cache_key):
+            return self._get_cache(cache_key)
+
+        major_tickers = [
+            "RELIANCE.NS", "TCS.NS", "HDFCBANK.NS", "ICICIBANK.NS", "BHARTIARTL.NS",
+            "INFY.NS", "SBIN.NS", "ITC.NS", "LT.NS", "HINDUNILVR.NS", "AXISBANK.NS",
+            "KOTAKBANK.NS", "ADANIENT.NS", "SBILIFE.NS", "BAJFINANCE.NS", "MARUTI.NS",
+            "SUNPHARMA.NS", "TITAN.NS", "ULTRACEMCO.NS", "ASIANPAINT.NS", "NTPC.NS",
+            "TATAMOTORS.NS", "JSWSTEEL.NS", "TATASTEEL.NS", "ONGC.NS", "POWERGRID.NS",
+            "M&M.NS", "HCLTECH.NS", "COALINDIA.NS", "HINDALCO.NS", "BAJAJFINSV.NS",
+            "WIPRO.NS", "NESTLEIND.NS", "DRREDDY.NS", "BPCL.NS", "BRITANNIA.NS"
+        ]
+
+        loop = asyncio.get_event_loop()
+        tasks = [loop.run_in_executor(executor, self._fetch_stock_sync, t) for t in major_tickers]
+        results = await asyncio.gather(*tasks)
+        
+        stocks = [r for r in results if r]
+        
+        # 1. Gainers (Top 5)
+        gainers = sorted(stocks, key=lambda x: x['change_pct'], reverse=True)[:5]
+        
+        # 2. Losers (Bottom 5)
+        losers = sorted(stocks, key=lambda x: x['change_pct'])[:5]
+        
+        # 3. Sector Performance
+        sector_map = {}
+        for s in stocks:
+            sector = s.get('sector', 'Other')
+            if sector not in sector_map:
+                sector_map[sector] = []
+            sector_map[sector].append(s['change_pct'])
+            
+        sector_perf = []
+        for sector, changes in sector_map.items():
+            avg_change = sum(changes) / len(changes)
+            sector_perf.append({
+                "name": sector,
+                "change": round(avg_change, 2),
+                "count": len(changes)
+            })
+            
+        final_data = {
+            "gainers": [{"symbol": g['symbol'], "name": g['name'], "price": g['price'], "change": g['change_pct']} for g in gainers],
+            "losers": [{"symbol": l['symbol'], "name": l['name'], "price": l['price'], "change": l['change_pct']} for l in losers],
+            "sectors": sorted(sector_perf, key=lambda x: x['change'], reverse=True)
+        }
+        
+        self._set_cache(cache_key, final_data)
+        return final_data
+
     async def search_instruments(self, query: str) -> list:
-        """Search for stocks/funds on NSE"""
-        # Common Indian stocks/funds for search
+        # (Keeping same for brevity, though could search major_tickers)
         all_instruments = [
             {"symbol": "RELIANCE", "name": "Reliance Industries Ltd", "type": "stock", "exchange": "NSE"},
             {"symbol": "TCS", "name": "Tata Consultancy Services Ltd", "type": "stock", "exchange": "NSE"},
             {"symbol": "INFY", "name": "Infosys Ltd", "type": "stock", "exchange": "NSE"},
             {"symbol": "HDFCBANK", "name": "HDFC Bank Ltd", "type": "stock", "exchange": "NSE"},
             {"symbol": "ICICIBANK", "name": "ICICI Bank Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "BHARTIARTL", "name": "Bharti Airtel Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "SBIN", "name": "State Bank of India", "type": "stock", "exchange": "NSE"},
-            {"symbol": "ITC", "name": "ITC Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "HINDUNILVR", "name": "Hindustan Unilever Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "LT", "name": "Larsen & Toubro Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "KOTAKBANK", "name": "Kotak Mahindra Bank Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "WIPRO", "name": "Wipro Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "AXISBANK", "name": "Axis Bank Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "TATAMOTORS", "name": "Tata Motors Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "MARUTI", "name": "Maruti Suzuki India Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "ADANIENT", "name": "Adani Enterprises Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "SUNPHARMA", "name": "Sun Pharmaceutical Industries Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "TATASTEEL", "name": "Tata Steel Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "BAJFINANCE", "name": "Bajaj Finance Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "HCLTECH", "name": "HCL Technologies Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "ASIANPAINT", "name": "Asian Paints Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "TITAN", "name": "Titan Company Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "ULTRACEMCO", "name": "UltraTech Cement Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "NESTLEIND", "name": "Nestle India Ltd", "type": "stock", "exchange": "NSE"},
-            {"symbol": "POWERGRID", "name": "Power Grid Corporation of India Ltd", "type": "stock", "exchange": "NSE"},
         ]
-
         q = query.lower()
-        return [
-            i for i in all_instruments
-            if q in i["name"].lower() or q in i["symbol"].lower()
-        ]
+        return [i for i in all_instruments if q in i["name"].lower() or q in i["symbol"].lower()]

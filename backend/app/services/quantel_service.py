@@ -24,7 +24,7 @@ class QuantelService:
     async def get_market_data(self, symbol: str, period: str = "1mo", interval: str = "1d") -> List[Dict]:
         """Fetch market data formatted for candlesticks"""
         yahoo_symbol = symbol.upper()
-        if not (yahoo_symbol.endswith('.NS') or yahoo_symbol.endswith('.BO')):
+        if not (yahoo_symbol.startswith('^') or yahoo_symbol.endswith('.NS') or yahoo_symbol.endswith('.BO')):
             yahoo_symbol = f"{yahoo_symbol}.NS"
             
         loop = asyncio.get_event_loop()
@@ -53,7 +53,10 @@ class QuantelService:
     async def get_comprehensive_analysis(self, symbol: str) -> Dict:
         """Deep fundamental and comparative analysis"""
         yahoo_symbol = symbol.upper()
-        if not (yahoo_symbol.endswith('.NS') or yahoo_symbol.endswith('.BO')):
+        # Handle Indices correctly (starting with ^)
+        is_index = yahoo_symbol.startswith('^')
+        
+        if not (is_index or yahoo_symbol.endswith('.NS') or yahoo_symbol.endswith('.BO')):
             yahoo_symbol = f"{yahoo_symbol}.NS"
             
         ticker = yf.Ticker(yahoo_symbol)
@@ -74,38 +77,42 @@ class QuantelService:
             print(f"Error fetching analysis for {symbol}: {e}")
             return None
 
-        # 1. Fundamental Scoring Logic
-        quality_score = 0
-        roe = info.get('returnOnEquity', 0)
-        if roe and roe > 0.15: quality_score += 2
-        elif roe and roe > 0.08: quality_score += 1
+        # 1. Fundamental Scoring Logic (Only for Stocks)
+        quality_score = 3
+        valuation_score = 3
+        financial_score = 3
         
-        margin = info.get('operatingMargins', 0)
-        if margin and margin > 0.15: quality_score += 1
-        
-        debt_to_equity = info.get('debtToEquity', 0)
-        if debt_to_equity and debt_to_equity < 50: quality_score += 1 # 50 = 0.5 ratio
-        elif not debt_to_equity: quality_score += 1 # Likely debt free
-        
-        valuation_score = 0
-        pe = info.get('trailingPE', 0)
-        if pe and pe < 15: valuation_score += 2
-        elif pe and pe < 25: valuation_score += 1
-        
-        pb = info.get('priceToBook', 0)
-        if pb and pb < 3: valuation_score += 1
-        
-        financial_score = 0
-        rev_growth = info.get('revenueGrowth', 0)
-        if rev_growth and rev_growth > 0.10: financial_score += 2
-        
-        profit_growth = info.get('earningsGrowth', 0)
-        if profit_growth and profit_growth > 0.10: financial_score += 2
+        if not is_index:
+            quality_score = 0
+            roe = info.get('returnOnEquity', 0)
+            if roe and roe > 0.15: quality_score += 2
+            elif roe and roe > 0.08: quality_score += 1
+            
+            margin = info.get('operatingMargins', 0)
+            if margin and margin > 0.15: quality_score += 1
+            
+            debt_to_equity = info.get('debtToEquity', 0)
+            if debt_to_equity and debt_to_equity < 50: quality_score += 1 
+            elif not debt_to_equity: quality_score += 1 
+            
+            valuation_score = 0
+            pe = info.get('trailingPE', 0)
+            if pe and pe < 15: valuation_score += 2
+            elif pe and pe < 25: valuation_score += 1
+            
+            pb = info.get('priceToBook', 0)
+            if pb and pb < 3: valuation_score += 1
+            
+            financial_score = 0
+            rev_growth = info.get('revenueGrowth', 0)
+            if rev_growth and rev_growth > 0.10: financial_score += 2
+            
+            profit_growth = info.get('earningsGrowth', 0)
+            if profit_growth and profit_growth > 0.10: financial_score += 2
 
         # 2. Shareholding Pattern
         shareholding = []
-        if holders is not None and not holders.empty:
-            # yfinance formats major_holders differently over versions
+        if not is_index and holders is not None and not holders.empty:
             try:
                 for idx, row in holders.iterrows():
                     shareholding.append({
@@ -116,23 +123,38 @@ class QuantelService:
 
         # 3. Events
         events = []
-        if calendar is not None:
+        if not is_index and calendar is not None:
             try:
                 for key, val in calendar.items():
                     if isinstance(val, (datetime, pd.Timestamp)):
                         events.append({"event": key, "date": val.strftime('%Y-%m-%d')})
             except: pass
 
+        # 4. Insights Adaptation
+        if is_index:
+            insights = [
+                f"{info.get('shortName', symbol)} tracks the overall performance of its constituent companies.",
+                "Technical indicators suggest market sentiment is " + ("Bullish" if technicals.get('trend') == 'bullish' else "Neutral/Bearish") + ".",
+                "Historical 52-week change shows a " + str(round(info.get('52WeekChange', 0) * 100, 2)) + "% movement."
+            ]
+        else:
+            insights = [
+                f"{info.get('longName', symbol)} is in the {info.get('sector')} sector with a focus on {info.get('industry')}.",
+                f"Management quality is considered { 'Excellent' if quality_score >= 4 else 'Good' if quality_score >= 2 else 'Stable' }.",
+                f"Valuation is currently { 'Attractive' if valuation_score >= 4 else 'Fair' if valuation_score >= 2 else 'Expensive' }."
+            ]
+
         return {
             "summary": {
-                "name": info.get('longName', symbol),
-                "sector": info.get('sector', 'N/A'),
-                "industry": info.get('industry', 'N/A'),
+                "name": info.get('shortName' if is_index else 'longName', symbol),
+                "sector": info.get('sector', 'N/A' if is_index else 'Universal'),
+                "industry": info.get('industry', 'N/A' if is_index else 'Market-Wide'),
                 "market_cap": info.get('marketCap', 0),
-                "current_price": info.get('currentPrice', 0),
+                "current_price": info.get('currentPrice' if not is_index else 'regularMarketPrice', 0) or info.get('navPrice', 0),
                 "day_high": info.get('dayHigh', 0),
                 "day_low": info.get('dayLow', 0),
-                "one_year_return": round(info.get('52WeekChange', 0) * 100, 2) if info.get('52WeekChange') else 0
+                "one_year_return": round(info.get('52WeekChange', 0) * 100, 2) if info.get('52WeekChange') else 0,
+                "is_index": is_index
             },
             "scores": {
                 "quality": min(max(quality_score, 1), 5),
@@ -143,11 +165,7 @@ class QuantelService:
             "events": events,
             "technicals": technicals,
             "news": news[:5] if news else [],
-            "insights": [
-                f"{info.get('longName', symbol)} is in the {info.get('sector')} sector with a focus on {info.get('industry')}.",
-                f"Management quality is considered { 'Excellent' if quality_score >= 4 else 'Good' if quality_score >= 2 else 'Stable' }.",
-                f"Valuation is currently { 'Attractive' if valuation_score >= 4 else 'Fair' if valuation_score >= 2 else 'Expensive' }."
-            ]
+            "insights": insights
         }
 
     async def _get_historical_data_wrapper(self, symbol: str, period: str = "1y") -> pd.DataFrame:
@@ -180,7 +198,7 @@ class QuantelService:
     async def get_technical_indicators(self, symbol: str) -> Dict:
         """Calculate technical indicators manually choosing to avoid pandas-ta conflicts"""
         yahoo_symbol = symbol.upper()
-        if not (yahoo_symbol.endswith('.NS') or yahoo_symbol.endswith('.BO')):
+        if not (yahoo_symbol.startswith('^') or yahoo_symbol.endswith('.NS') or yahoo_symbol.endswith('.BO')):
             yahoo_symbol = f"{yahoo_symbol}.NS"
 
         df = await self._get_historical_data_wrapper(yahoo_symbol)
@@ -223,7 +241,7 @@ class QuantelService:
     async def get_price_prediction(self, symbol: str) -> Dict:
         """Fast ARIMA-based trend prediction for prototype"""
         yahoo_symbol = symbol.upper()
-        if not (yahoo_symbol.endswith('.NS') or yahoo_symbol.endswith('.BO')):
+        if not (yahoo_symbol.startswith('^') or yahoo_symbol.endswith('.NS') or yahoo_symbol.endswith('.BO')):
             yahoo_symbol = f"{yahoo_symbol}.NS"
 
         df = await self._get_historical_data_wrapper(yahoo_symbol, "6mo")
@@ -259,7 +277,7 @@ class QuantelService:
         # For prototype, we simulate weights based on volatility
         data = {}
         for s in symbols:
-            yahoo_symbol = s.upper() if (s.upper().endswith('.NS') or s.upper().endswith('.BO')) else f"{s.upper()}.NS"
+            yahoo_symbol = s.upper() if (s.upper().startswith('^') or s.upper().endswith('.NS') or s.upper().endswith('.BO')) else f"{s.upper()}.NS"
             df = await loop.run_in_executor(executor, self._get_historical_data, yahoo_symbol, "1y")
             if not df.empty:
                 data[s] = df['Close'].pct_change().dropna()
@@ -302,7 +320,7 @@ class QuantelService:
 
     async def get_risk_metrics(self, symbol: str) -> Dict:
         """Calculate Value at Risk (VaR) and Volatility"""
-        yahoo_symbol = symbol.upper() if (symbol.upper().endswith('.NS') or symbol.upper().endswith('.BO')) else f"{symbol.upper()}.NS"
+        yahoo_symbol = symbol.upper() if (symbol.upper().startswith('^') or symbol.upper().endswith('.NS') or symbol.upper().endswith('.BO')) else f"{symbol.upper()}.NS"
         
         loop = asyncio.get_event_loop()
         df = await loop.run_in_executor(executor, self._get_historical_data, yahoo_symbol, "1y")

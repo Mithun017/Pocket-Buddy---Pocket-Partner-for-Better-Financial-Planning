@@ -24,8 +24,8 @@ async def get_trending_stocks(current_user: Dict = Depends(get_current_user)):
     trending = await market_service.get_trending_stocks()
     return {"trending": trending}
 
-@router.get("/search")
-async def search_instruments(query: str, current_user: Dict = Depends(get_current_user)):
-    """Search for stocks/mutual funds"""
-    results = await market_service.search_instruments(query)
-    return {"results": results}
+@router.get("/dashboard")
+async def get_market_dashboard(current_user: Dict = Depends(get_current_user)):
+    """Get market movers and sector performance"""
+    data = await market_service.get_market_movers()
+    return data

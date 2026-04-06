@@ -6,8 +6,8 @@ import Navbar from './components/Navbar';
 import ChatWidget from './components/ChatWidget';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
 import Recommendations from './pages/Recommendations';
-import Market from './pages/Market';
 import Quantel from './pages/Quantel';
 import './App.css';
 
@@ -30,6 +30,14 @@ function App() {
               }
             />
             <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
               path="/recommendations"
               element={
                 <PrivateRoute>
@@ -37,14 +45,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route
-              path="/market"
-              element={
-                <PrivateRoute>
-                  <Market />
-                </PrivateRoute>
-              }
-            />
+
 
             <Route
               path="/quantel"

@@ -57,9 +57,8 @@ const Dashboard = () => {
         <div className="card">
           <h3>⚡ Quick Actions</h3>
           <div className="quick-links">
-            <Link to="/profile" className="quick-link">👤 Update Profile</Link>
             <Link to="/recommendations" className="quick-link">💰 Recommendations</Link>
-            <Link to="/market" className="quick-link">📈 Market Insights</Link>
+            <Link to="/quantel" className="quick-link">📉 Market Intelligence</Link>
           </div>
         </div>
 

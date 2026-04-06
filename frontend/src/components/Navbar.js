@@ -30,7 +30,6 @@ const Navbar = () => {
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: '📊' },
     { path: '/recommendations', label: 'Invest', icon: '💰' },
-    { path: '/market', label: 'Market', icon: '📈' },
     { path: '/quantel', label: 'Quantel', icon: '🧠' },
   ];
 
