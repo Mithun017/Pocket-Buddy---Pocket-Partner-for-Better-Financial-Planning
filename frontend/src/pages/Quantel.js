@@ -14,6 +14,15 @@ import {
   Legend
 } from 'recharts';
 import { useAuth } from '../context/AuthContext';
+import { 
+  IconBarChart, 
+  IconBuilding, 
+  IconFlame, 
+  IconGlobe, 
+  IconNewspaper,
+  IconBrain,
+  IconTrendingUp
+} from '../components/Icons';
 import './Quantel.css';
 
 const API_URL = 'http://localhost:8000';
@@ -237,7 +246,9 @@ const Quantel = () => {
                 <div className="market-movers-grid">
                   <div className="movers-section quant-card">
                     <div className="movers-header">
-                      <h3>📊 Market Movers</h3>
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <IconBarChart size={18} color="#6366f1" /> Market Movers
+                      </h3>
                       <div className="mover-toggles">
                         <button 
                           className={moverTab === 'gainers' ? 'active' : ''} 
@@ -275,7 +286,9 @@ const Quantel = () => {
                   </div>
 
                   <div className="sector-matrix quant-card">
-                    <h3>🏗️ Sector Performance</h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <IconBuilding size={18} color="#10b981" /> Sector Performance
+                    </h3>
                     <div className="sector-grid">
                       {movers.sectors?.slice(0, 6).map((sector) => (
                         <div key={sector.name} className="sector-card">
@@ -291,7 +304,9 @@ const Quantel = () => {
 
                 <div className="market-trends-grid">
                   <div className="trending-section quant-card">
-                    <h3>🔥 Trending Stocks (NSE)</h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <IconFlame size={18} color="#f59e0b" /> Trending Stocks (NSE)
+                    </h3>
                     <div className="trending-rows">
                       {trending.map((stock) => (
                         <div 
@@ -316,7 +331,9 @@ const Quantel = () => {
                   </div>
                   
                   <div className="market-intelligence-box quant-card">
-                     <h3>📊 Global Market Pulse</h3>
+                     <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <IconGlobe size={18} color="#8b5cf6" /> Global Market Pulse
+                     </h3>
                      <p className="pulse-text">
                         The Indian market is showing {indices?.NIFTY_50?.change >= 0 ? 'Bullish' : 'Bearish'} sentiment 
                         today with {movers.gainers?.[0]?.symbol} leading the gainer charts. 
@@ -629,15 +646,17 @@ const Quantel = () => {
               <div className="news-pane quant-card">
                 <div className="news-pane-header">
                   <div>
-                    <h3>📰 Real-Time Company & Market News</h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <IconNewspaper size={18} color="#6366f1" /> Real-Time Company & Market News
+                    </h3>
                     <p className="news-pane-sub">Live intelligence, corporate actions, and analyst coverage for {summary?.name || symbol}</p>
                   </div>
                   <div className="news-sentiment-summary">
                     <span className="sentiment-pill-badge">
-                      Sentiment: <strong>{
+                      Sentiment: <strong className={(news?.filter(n => n.sentiment === 'Bullish').length || 0) >= (news?.filter(n => n.sentiment === 'Bearish').length || 0) ? 'sentiment-bullish-text' : 'sentiment-bearish-text'}>{
                         (news?.filter(n => n.sentiment === 'Bullish').length || 0) >= (news?.filter(n => n.sentiment === 'Bearish').length || 0)
-                          ? '🟢 Bullish Momentum'
-                          : '🔴 Bearish Stance'
+                          ? '▲ Bullish Momentum'
+                          : '▼ Bearish Stance'
                       }</strong>
                     </span>
                   </div>

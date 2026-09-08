@@ -260,6 +260,14 @@
   margin-top: 2px;
 }
 
+.sentiment-bullish-text {
+  color: var(--success, #10b981);
+}
+
+.sentiment-bearish-text {
+  color: var(--danger, #ef4444);
+}
+
 .sentiment-pill-badge {
   font-size: 12px;
   color: var(--text-secondary);

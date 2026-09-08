@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Profile.css';
 import { useAuth } from '../context/AuthContext';
+import { IconUser, IconLogout } from '../components/Icons';
 
 const API_URL = 'http://localhost:8000';
 
@@ -84,7 +85,10 @@ const Profile = () => {
 
   return (
     <div className="profile-page">
-      <h1>👤 My Financial Profile</h1>
+      <div className="profile-header-title">
+        <IconUser size={24} color="#6366f1" />
+        <h1>My Financial Profile</h1>
+      </div>
       
       {message && <div className={`success-message ${message.includes('Failed') ? 'error' : ''}`}>{message}</div>}
 
@@ -173,7 +177,7 @@ const Profile = () => {
 
         <div className="profile-footer">
           <button className="btn-logout-alt" onClick={logout}>
-            🚪 Logout from Pocket Buddy
+            <IconLogout size={16} /> Logout from Pocket Buddy
           </button>
         </div>
       </div>

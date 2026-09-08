@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { IconBot, IconClose, IconSend, IconTrendingUp, IconBarChart, IconTax } from './Icons';
 import './ChatWidget.css';
 
 const API_URL = 'http://localhost:8000';
@@ -11,7 +12,6 @@ const ChatWidget = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const ChatWidget = () => {
       console.error('Chat Error:', error);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'I am having trouble connecting to my brain right now. Please try again soon.',
+        content: 'I am having trouble connecting to my advisory engine right now. Please try again in a moment.',
         timestamp: new Date()
       }]);
     } finally {
@@ -67,7 +67,7 @@ const ChatWidget = () => {
         onClick={() => setIsOpen(!isOpen)}
         title="AI Financial Assistant"
       >
-        {isOpen ? '✕' : '🤖'}
+        {isOpen ? <IconClose size={20} color="#fff" /> : <IconBot size={22} color="#fff" />}
       </button>
 
       {/* Chat Panel */}
@@ -75,24 +75,37 @@ const ChatWidget = () => {
         <div className="chat-widget">
           <div className="chat-widget-header">
             <div className="chat-widget-title">
-              <span className="chat-widget-icon">🤖</span>
+              <span className="chat-widget-icon">
+                <IconBot size={18} color="#818cf8" />
+              </span>
               <div>
                 <h4>Pocket Buddy AI</h4>
                 <span className="chat-widget-status">Online</span>
               </div>
             </div>
-            <button className="chat-widget-close" onClick={() => setIsOpen(false)}>✕</button>
+            <button className="chat-widget-close" onClick={() => setIsOpen(false)}>
+              <IconClose size={16} />
+            </button>
           </div>
 
           <div className="chat-widget-messages">
             {messages.length === 0 && (
               <div className="chat-widget-welcome">
-                <p>👋 Hi {user?.full_name?.split(' ')[0]}!</p>
-                <p>Ask me anything about finances.</p>
+                <p>Hello {user?.full_name?.split(' ')[0]}!</p>
+                <p>How can I assist with your financial strategy today?</p>
                 <div className="chat-widget-chips">
-                  <button onClick={() => sendMessage('Best investment options?')}>💰 Investments</button>
-                  <button onClick={() => sendMessage('How should I start a SIP?')}>📊 SIP</button>
-                  <button onClick={() => sendMessage('Tax saving tips')}>🧾 Tax</button>
+                  <button onClick={() => sendMessage('Best investment options?')}>
+                    <IconTrendingUp size={13} />
+                    <span>Investments</span>
+                  </button>
+                  <button onClick={() => sendMessage('How should I start a SIP?')}>
+                    <IconBarChart size={13} />
+                    <span>SIP Planning</span>
+                  </button>
+                  <button onClick={() => sendMessage('Tax saving tips')}>
+                    <IconTax size={13} />
+                    <span>Tax Optimization</span>
+                  </button>
                 </div>
               </div>
             )}
@@ -116,12 +129,14 @@ const ChatWidget = () => {
           <form className="chat-widget-input" onSubmit={handleSubmit}>
             <input
               type="text"
-              placeholder="Type a message..."
+              placeholder="Ask a financial question..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={loading}
             />
-            <button type="submit" disabled={loading || !input.trim()}>➤</button>
+            <button type="submit" disabled={loading || !input.trim()}>
+              <IconSend size={15} />
+            </button>
           </form>
         </div>
       )}
@@ -130,3 +145,4 @@ const ChatWidget = () => {
 };
 
 export default ChatWidget;
+

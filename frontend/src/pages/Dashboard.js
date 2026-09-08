@@ -16,16 +16,29 @@ import {
   Bar,
   Legend
 } from 'recharts';
+import {
+  IconZap,
+  IconTarget,
+  IconBriefcase,
+  IconTrendingUp,
+  IconShield,
+  IconBarChart,
+  IconPieChart,
+  IconUser,
+  IconFlame,
+  IconSparkles,
+  IconLightbulb,
+  IconSettings
+} from '../components/Icons';
 import './Dashboard.css';
 
 const API_URL = 'http://localhost:8000';
 
-// Asset allocation colors
 const ALLOCATION_COLORS = {
-  stocks: '#6366f1',       // Indigo
-  mutual_funds: '#10b981', // Emerald
-  bonds: '#f59e0b',        // Amber
-  liquid: '#06b6d4',       // Cyan
+  stocks: '#6366f1',
+  mutual_funds: '#10b981',
+  bonds: '#f59e0b',
+  liquid: '#06b6d4',
   liquid_funds: '#06b6d4',
   debt_funds: '#f59e0b',
   equity: '#6366f1'
@@ -55,18 +68,15 @@ const Dashboard = () => {
   const [marketMovers, setMarketMovers] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Live Chart State
   const [selectedTicker, setSelectedTicker] = useState(POPULAR_TICKERS[0]);
-  const [selectedTimeframe, setSelectedTimeframe] = useState(TIMEFRAMES[1]); // 1M default
+  const [selectedTimeframe, setSelectedTimeframe] = useState(TIMEFRAMES[1]);
   const [chartData, setChartData] = useState([]);
   const [chartLoading, setChartLoading] = useState(false);
   const [tickerQuote, setTickerQuote] = useState(null);
 
-  // SIP Calculator State for Wealth Projection
   const [sipMonthlyAmount, setSipMonthlyAmount] = useState(15000);
   const [sipReturnRate] = useState(12);
 
-  // Fetch initial dashboard bundle
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -87,7 +97,6 @@ const Dashboard = () => {
           const res = await axios.get(`${API_URL}/user/profile`);
           setProfile(res.data);
           if (res.data?.profile?.income) {
-            // Suggest ~20-25% of monthly income for SIP slider
             const suggested = Math.round((res.data.profile.income / 12) * 0.25);
             if (suggested > 1000) {
               setSipMonthlyAmount(Math.round(suggested / 1000) * 1000);
@@ -160,7 +169,6 @@ const Dashboard = () => {
     });
   }, []);
 
-  // Fetch Chart Data whenever ticker or timeframe changes
   const fetchLiveChartData = useCallback(async (ticker, timeframe) => {
     setChartLoading(true);
     try {
@@ -214,7 +222,6 @@ const Dashboard = () => {
     fetchLiveChartData(selectedTicker, selectedTimeframe);
   }, [selectedTicker, selectedTimeframe, fetchLiveChartData]);
 
-  // Asset allocation pie data
   const allocationPieData = useMemo(() => {
     if (recommendations?.rule_based?.portfolio_allocation) {
       return Object.entries(recommendations.rule_based.portfolio_allocation).map(([key, val]) => ({
@@ -224,7 +231,6 @@ const Dashboard = () => {
         color: ALLOCATION_COLORS[key] || '#8b5cf6'
       }));
     }
-    // Default balanced breakdown if profile isn't fully computed yet
     return [
       { name: 'MUTUAL FUNDS', rawKey: 'mutual_funds', value: 35, color: '#10b981' },
       { name: 'BONDS / DEBT', rawKey: 'bonds', value: 30, color: '#f59e0b' },
@@ -233,14 +239,12 @@ const Dashboard = () => {
     ];
   }, [recommendations]);
 
-  // SIP Future Value Compound Projection (1, 3, 5, 10, 15, 20 Years)
   const wealthProjectionData = useMemo(() => {
     const years = [1, 3, 5, 10, 15, 20];
-    const r = (sipReturnRate / 100) / 12; // Monthly rate
+    const r = (sipReturnRate / 100) / 12;
     return years.map(y => {
       const months = y * 12;
       const totalInvested = sipMonthlyAmount * months;
-      // Future Value of monthly SIP: P * [ ((1+r)^n - 1)/r ] * (1+r)
       const futureValue = r > 0
         ? Math.round(sipMonthlyAmount * ((Math.pow(1 + r, months) - 1) / r) * (1 + r))
         : totalInvested;
@@ -256,7 +260,6 @@ const Dashboard = () => {
     });
   }, [sipMonthlyAmount, sipReturnRate]);
 
-  // Health Score Calculation
   const healthScore = recommendations?.rule_based?.risk_score || 78;
 
   if (loading) {
@@ -281,10 +284,12 @@ const Dashboard = () => {
         </div>
         <div className="header-actions">
           <Link to="/quantel" className="btn-glow-primary">
-            ⚡ Open Quantel Pro
+            <IconZap size={15} />
+            <span>Open Quantel Pro</span>
           </Link>
           <Link to="/recommendations" className="btn-glass">
-            🎯 View Portfolio Recs
+            <IconTarget size={15} />
+            <span>View Portfolio Recs</span>
           </Link>
         </div>
       </div>
@@ -292,7 +297,9 @@ const Dashboard = () => {
       {/* Top Metric Cards */}
       <div className="kpi-metrics-grid">
         <div className="kpi-card">
-          <div className="kpi-icon-wrap indigo">💼</div>
+          <div className="kpi-icon-wrap indigo">
+            <IconBriefcase size={20} color="#818cf8" />
+          </div>
           <div className="kpi-body">
             <span className="kpi-label">Risk Profile</span>
             <h4 className="kpi-val">{profile?.profile?.risk_appetite ? profile.profile.risk_appetite.toUpperCase() : 'BALANCED'}</h4>
@@ -301,7 +308,9 @@ const Dashboard = () => {
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-icon-wrap emerald">📈</div>
+          <div className="kpi-icon-wrap emerald">
+            <IconTrendingUp size={20} color="#10b981" />
+          </div>
           <div className="kpi-body">
             <span className="kpi-label">Suggested Monthly SIP</span>
             <h4 className="kpi-val">
@@ -312,7 +321,9 @@ const Dashboard = () => {
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-icon-wrap amber">🎯</div>
+          <div className="kpi-icon-wrap amber">
+            <IconTarget size={20} color="#f59e0b" />
+          </div>
           <div className="kpi-body">
             <span className="kpi-label">Expected Annual Return</span>
             <h4 className="kpi-val">{recommendations?.rule_based?.expected_annual_return || '10-12%'}</h4>
@@ -321,11 +332,13 @@ const Dashboard = () => {
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-icon-wrap cyan">🛡️</div>
+          <div className="kpi-icon-wrap cyan">
+            <IconShield size={20} color="#06b6d4" />
+          </div>
           <div className="kpi-body">
             <span className="kpi-label">Financial Health Index</span>
             <h4 className="kpi-val">{healthScore} / 100</h4>
-            <span className="kpi-sub text-success">✓ Strong Alignment</span>
+            <span className="kpi-sub text-success">Strong Alignment</span>
           </div>
         </div>
       </div>
@@ -335,12 +348,17 @@ const Dashboard = () => {
         {/* Quick Actions */}
         <div className="card action-hub-card">
           <div className="card-header-clean">
-            <h3>⚡ Wealth Navigation</h3>
+            <h3>
+              <IconZap size={16} />
+              <span>Wealth Navigation</span>
+            </h3>
             <span className="badge-pill">Shortcuts</span>
           </div>
           <div className="quick-actions-modern">
             <Link to="/recommendations" className="action-tile purple">
-              <span className="tile-icon">💰</span>
+              <span className="tile-icon">
+                <IconTrendingUp size={20} color="#818cf8" />
+              </span>
               <div className="tile-text">
                 <strong>Recommendations</strong>
                 <small>AI Asset Allocations</small>
@@ -348,7 +366,9 @@ const Dashboard = () => {
               <span className="tile-arrow">→</span>
             </Link>
             <Link to="/quantel" className="action-tile blue">
-              <span className="tile-icon">📉</span>
+              <span className="tile-icon">
+                <IconBarChart size={20} color="#6366f1" />
+              </span>
               <div className="tile-text">
                 <strong>Market Intelligence</strong>
                 <small>Quantel Real-Time ML</small>
@@ -356,7 +376,9 @@ const Dashboard = () => {
               <span className="tile-arrow">→</span>
             </Link>
             <Link to="/profile" className="action-tile emerald">
-              <span className="tile-icon">⚙️</span>
+              <span className="tile-icon">
+                <IconSettings size={20} color="#10b981" />
+              </span>
               <div className="tile-text">
                 <strong>Profile & Goals</strong>
                 <small>Update Risk & Income</small>
@@ -369,7 +391,10 @@ const Dashboard = () => {
         {/* Market Overview */}
         <div className="card market-summary-card">
           <div className="card-header-clean">
-            <h3>📊 Market Overview</h3>
+            <h3>
+              <IconBarChart size={16} />
+              <span>Market Overview</span>
+            </h3>
             <span className="badge-live-tag">Live Feed</span>
           </div>
           <div className="market-preview">
@@ -392,7 +417,7 @@ const Dashboard = () => {
                   <div className="market-item-right">
                     <span className="market-value">{data.value?.toLocaleString()}</span>
                     <span className={`market-change-badge ${data.change >= 0 ? 'positive' : 'negative'}`}>
-                      {data.change >= 0 ? '▲ +' : '▼ '}{data.change_pct}%
+                      {data.change >= 0 ? '+' : ''}{data.change_pct}%
                     </span>
                   </div>
                 </div>
@@ -403,7 +428,10 @@ const Dashboard = () => {
         {/* Profile Status */}
         <div className="card profile-card-modern">
           <div className="card-header-clean">
-            <h3>👤 Investor Profile</h3>
+            <h3>
+              <IconUser size={16} />
+              <span>Investor Profile</span>
+            </h3>
             <Link to="/profile" className="link-tiny">Edit</Link>
           </div>
           {profile?.profile ? (
@@ -482,7 +510,7 @@ const Dashboard = () => {
               <span className="quote-symbol-name">{selectedTicker.name}</span>
               <span className="quote-price">₹{tickerQuote.current?.toLocaleString()}</span>
               <span className={`quote-change-tag ${tickerQuote.isPositive ? 'positive' : 'negative'}`}>
-                {tickerQuote.isPositive ? '▲ +' : '▼ '}{tickerQuote.change} ({tickerQuote.changePct}%)
+                {tickerQuote.isPositive ? '+' : ''}{tickerQuote.change} ({tickerQuote.changePct}%)
               </span>
             </div>
             <div className="quote-stats">
@@ -496,7 +524,7 @@ const Dashboard = () => {
               </div>
               <div className="stat-pill">
                 <span>Feed Status</span>
-                <strong className="text-emerald">● Real-time Sync</strong>
+                <strong className="text-emerald">Real-time Sync</strong>
               </div>
             </div>
           </div>
@@ -567,7 +595,10 @@ const Dashboard = () => {
         <div className="card allocation-donut-card">
           <div className="card-header-clean">
             <div>
-              <h3>🎯 Target Asset Allocation</h3>
+              <h3>
+                <IconPieChart size={16} />
+                <span>Target Asset Allocation</span>
+              </h3>
               <p className="card-subtitle">AI-computed portfolio mix for your risk profile</p>
             </div>
             <span className="badge-pill purple">
@@ -622,7 +653,10 @@ const Dashboard = () => {
         <div className="card wealth-projection-card">
           <div className="card-header-clean">
             <div>
-              <h3>🚀 Long-term Wealth Compounding</h3>
+              <h3>
+                <IconTrendingUp size={16} />
+                <span>Long-term Wealth Compounding</span>
+              </h3>
               <p className="card-subtitle">Projected corpus over time with regular SIP investing</p>
             </div>
             <span className="badge-pill emerald">12% CAGR</span>
@@ -706,13 +740,16 @@ const Dashboard = () => {
         {/* Top Market Movers & Sectors */}
         <div className="card market-movers-card">
           <div className="card-header-clean">
-            <h3>🔥 Market Pulse & Gainers</h3>
+            <h3>
+              <IconFlame size={16} />
+              <span>Market Pulse & Gainers</span>
+            </h3>
             <span className="badge-pill">NSE / BSE</span>
           </div>
 
           <div className="movers-dual-grid">
             <div className="movers-column">
-              <span className="movers-col-title text-success">▲ Top Gainers</span>
+              <span className="movers-col-title text-success">Top Gainers</span>
               <div className="movers-list">
                 {(marketMovers?.gainers?.length ? marketMovers.gainers : [
                   { symbol: 'BHARTIARTL', price: 1720.4, change: 2.84 },
@@ -729,7 +766,7 @@ const Dashboard = () => {
             </div>
 
             <div className="movers-column">
-              <span className="movers-col-title text-danger">▼ Active Movers</span>
+              <span className="movers-col-title text-danger">Active Movers</span>
               <div className="movers-list">
                 {(marketMovers?.losers?.length ? marketMovers.losers : [
                   { symbol: 'INFY', price: 1780.2, change: -0.85 },
@@ -770,7 +807,9 @@ const Dashboard = () => {
         <div className="card ai-advisor-card">
           <div className="card-header-clean">
             <div className="ai-title-wrap">
-              <span className="ai-icon-sparkle">✨</span>
+              <span className="ai-icon-sparkle">
+                <IconSparkles size={18} color="#a855f7" />
+              </span>
               <h3>Pocket Buddy AI Financial Insight</h3>
             </div>
             <span className="badge-pill purple">Gemini 2.0</span>
@@ -789,7 +828,8 @@ const Dashboard = () => {
 
             <div className="ai-action-footer">
               <div className="ai-tip-meta">
-                <span>💡 Tip: Automate your SIP on salary day to build disciplined wealth compounding.</span>
+                <IconLightbulb size={14} color="#f59e0b" />
+                <span>Tip: Automate your SIP on salary day to build disciplined wealth compounding.</span>
               </div>
               <div className="ai-buttons">
                 <Link to="/recommendations" className="btn-ai-action">

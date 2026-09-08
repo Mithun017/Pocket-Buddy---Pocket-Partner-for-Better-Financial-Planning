@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { IconLogo, IconDashboard, IconTrendingUp, IconBrain, IconUser, IconLogout } from './Icons';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -15,7 +16,6 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    // ... handleClickOutside
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
@@ -28,16 +28,18 @@ const Navbar = () => {
   if (!user) return null;
 
   const navItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: '📊' },
-    { path: '/recommendations', label: 'Invest', icon: '💰' },
-    { path: '/quantel', label: 'Quantel', icon: '🧠' },
+    { path: '/dashboard', label: 'Dashboard', icon: <IconDashboard size={18} /> },
+    { path: '/recommendations', label: 'Invest', icon: <IconTrendingUp size={18} /> },
+    { path: '/quantel', label: 'Quantel', icon: <IconBrain size={18} /> },
   ];
 
   return (
     <nav className="navbar">
       <div className="navbar-inner">
         <Link to="/dashboard" className="navbar-brand" onClick={() => setIsDropdownOpen(false)}>
-          <span className="brand-icon">💰</span>
+          <span className="brand-icon">
+            <IconLogo size={22} color="#6366f1" />
+          </span>
           <span className="brand-text">Pocket Buddy</span>
         </Link>
 
@@ -60,7 +62,9 @@ const Navbar = () => {
             className={`profile-trigger ${isDropdownOpen ? 'active' : ''}`}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            <span className="trigger-icon">👤</span>
+            <span className="trigger-icon">
+              <IconUser size={16} />
+            </span>
             <span className="trigger-text">Profile</span>
           </button>
 
@@ -101,7 +105,8 @@ const Navbar = () => {
 
               <div className="dropdown-footer">
                 <button className="dropdown-logout" onClick={handleLogout}>
-                  🚪 Logout
+                  <IconLogout size={16} />
+                  <span>Logout</span>
                 </button>
               </div>
             </div>
