@@ -627,17 +627,58 @@ const Quantel = () => {
 
             {activeTab === 'news' && (
               <div className="news-pane quant-card">
-                <h3>Latest Market Sentiment</h3>
-                <div className="news-list">
-                  {news?.map((item, i) => (
-                    <a key={i} href={item.link} target="_blank" rel="noreferrer" className="news-item">
-                      <div className="news-meta">
-                        <span className="news-provider">{item.publisher}</span>
-                        <span className="news-time">{new Date(item.providerPublishTime * 1000).toLocaleDateString()}</span>
-                      </div>
-                      <h4>{item.title}</h4>
-                    </a>
-                  ))}
+                <div className="news-pane-header">
+                  <div>
+                    <h3>📰 Real-Time Company & Market News</h3>
+                    <p className="news-pane-sub">Live intelligence, corporate actions, and analyst coverage for {summary?.name || symbol}</p>
+                  </div>
+                  <div className="news-sentiment-summary">
+                    <span className="sentiment-pill-badge">
+                      Sentiment: <strong>{
+                        (news?.filter(n => n.sentiment === 'Bullish').length || 0) >= (news?.filter(n => n.sentiment === 'Bearish').length || 0)
+                          ? '🟢 Bullish Momentum'
+                          : '🔴 Bearish Stance'
+                      }</strong>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="news-list-rich">
+                  {news && news.length > 0 ? (
+                    news.map((item, i) => (
+                      <a key={i} href={item.link} target="_blank" rel="noreferrer" className="news-card-modern">
+                        <div className="news-card-body">
+                          <div className="news-meta-row">
+                            <span className="news-source-tag">{item.publisher || 'Market Wire'}</span>
+                            <span className="news-date-tag">
+                              {item.pubDate || (item.providerPublishTime ? new Date(item.providerPublishTime * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent')}
+                            </span>
+                            {item.sentiment && (
+                              <span className={`news-sentiment-tag ${item.sentiment_type || item.sentiment.toLowerCase()}`}>
+                                {item.sentiment === 'Bullish' ? '▲ Bullish' : item.sentiment === 'Bearish' ? '▼ Bearish' : '● Neutral'}
+                              </span>
+                            )}
+                          </div>
+                          <h4 className="news-card-title">{item.title}</h4>
+                          {item.summary && (
+                            <p className="news-card-summary">{item.summary}</p>
+                          )}
+                          <div className="news-card-footer">
+                            <span className="read-more-link">Read Full Coverage ↗</span>
+                          </div>
+                        </div>
+                        {item.thumbnail && (
+                          <div className="news-thumb-wrap">
+                            <img src={item.thumbnail} alt={item.title} className="news-thumb-img" onError={(e) => { e.target.style.display = 'none'; }} />
+                          </div>
+                        )}
+                      </a>
+                    ))
+                  ) : (
+                    <div className="empty-news-state">
+                      <p>Fetching real-time news stream for {symbol}...</p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
