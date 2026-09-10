@@ -16,30 +16,36 @@ const CandleStickChart = ({ data }) => {
       width: handleWidth,
       height: 400,
       layout: {
-        backgroundColor: '#111827',
-        textColor: '#94a3b8',
+        backgroundColor: '#FFFFFF',
+        textColor: '#5C4F3D',
+        fontSize: 12,
       },
       grid: {
-        vertLines: { color: 'rgba(255, 255, 255, 0.05)' },
-        horzLines: { color: 'rgba(255, 255, 255, 0.05)' },
+        vertLines: { color: 'rgba(184, 134, 11, 0.1)' },
+        horzLines: { color: 'rgba(184, 134, 11, 0.1)' },
       },
       crosshair: {
         mode: CrosshairMode.Normal,
       },
       rightPriceScale: {
-        borderColor: 'rgba(255, 255, 255, 0.1)',
+        borderColor: '#EEDBBB',
+        textColor: '#5C4F3D',
       },
       timeScale: {
-        borderColor: 'rgba(255, 255, 255, 0.1)',
+        borderColor: '#EEDBBB',
+        textColor: '#5C4F3D',
       },
     });
 
     const series = chart.addCandlestickSeries({
-      upColor: '#10b981',
-      downColor: '#ef4444',
-      borderVisible: false,
-      wickUpColor: '#10b981',
-      wickDownColor: '#ef4444',
+      upColor: '#047857',
+      downColor: '#B91C1C',
+      borderVisible: true,
+      borderColor: '#047857',
+      borderUpColor: '#047857',
+      borderDownColor: '#B91C1C',
+      wickUpColor: '#047857',
+      wickDownColor: '#B91C1C',
     });
 
     if (data && data.length > 0) {
@@ -74,8 +80,10 @@ const CandleStickChart = ({ data }) => {
         width: '100%', 
         height: '400px', 
         position: 'relative',
-        backgroundColor: '#111827',
-        borderRadius: '8px' 
+        backgroundColor: '#FFFFFF',
+        borderRadius: '12px',
+        border: '1px solid #EEDBBB',
+        overflow: 'hidden'
       }} 
     />
   );

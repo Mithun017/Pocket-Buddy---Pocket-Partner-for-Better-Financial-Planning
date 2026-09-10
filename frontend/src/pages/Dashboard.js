@@ -34,14 +34,14 @@ import './Dashboard.css';
 
 const API_URL = 'http://localhost:8000';
 
-const ALLOCATION_COLORS = {
-  stocks: '#6366f1',
-  mutual_funds: '#10b981',
-  bonds: '#f59e0b',
-  liquid: '#06b6d4',
-  liquid_funds: '#06b6d4',
-  debt_funds: '#f59e0b',
-  equity: '#6366f1'
+const ASSET_COLORS = {
+  stocks: '#B8860B',
+  mutual_funds: '#047857',
+  bonds: '#C69234',
+  liquid: '#0284C7',
+  gold: '#D4AF37',
+  real_estate: '#8C7B64',
+  equity: '#B8860B'
 };
 
 const POPULAR_TICKERS = [
@@ -228,14 +228,14 @@ const Dashboard = () => {
         name: key.replace(/_/g, ' ').toUpperCase(),
         rawKey: key,
         value: Number(val),
-        color: ALLOCATION_COLORS[key] || '#8b5cf6'
+        color: (typeof ASSET_COLORS !== 'undefined' ? ASSET_COLORS[key] : null) || '#B8860B'
       }));
     }
     return [
-      { name: 'MUTUAL FUNDS', rawKey: 'mutual_funds', value: 35, color: '#10b981' },
-      { name: 'BONDS / DEBT', rawKey: 'bonds', value: 30, color: '#f59e0b' },
-      { name: 'EQUITY / STOCKS', rawKey: 'stocks', value: 25, color: '#6366f1' },
-      { name: 'LIQUID CASH', rawKey: 'liquid', value: 10, color: '#06b6d4' }
+      { name: 'MUTUAL FUNDS', rawKey: 'mutual_funds', value: 35, color: '#047857' },
+      { name: 'BONDS / DEBT', rawKey: 'bonds', value: 30, color: '#C69234' },
+      { name: 'EQUITY / STOCKS', rawKey: 'stocks', value: 25, color: '#B8860B' },
+      { name: 'LIQUID CASH', rawKey: 'liquid', value: 10, color: '#0284C7' }
     ];
   }, [recommendations]);
 
@@ -367,7 +367,7 @@ const Dashboard = () => {
             </Link>
             <Link to="/quantel" className="action-tile blue">
               <span className="tile-icon">
-                <IconBarChart size={20} color="#6366f1" />
+                <IconBarChart size={20} color="#B8860B" />
               </span>
               <div className="tile-text">
                 <strong>Market Intelligence</strong>
@@ -542,44 +542,44 @@ const Dashboard = () => {
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={tickerQuote?.isPositive !== false ? '#6366f1' : '#ef4444'} stopOpacity={0.4} />
-                  <stop offset="95%" stopColor={tickerQuote?.isPositive !== false ? '#6366f1' : '#ef4444'} stopOpacity={0.0} />
+                  <stop offset="5%" stopColor={tickerQuote?.isPositive !== false ? '#B8860B' : '#B91C1C'} stopOpacity={0.35} />
+                  <stop offset="95%" stopColor={tickerQuote?.isPositive !== false ? '#B8860B' : '#B91C1C'} stopOpacity={0.0} />
                 </linearGradient>
               </defs>
               <XAxis
                 dataKey="label"
-                stroke="#64748b"
+                stroke="#8C7B64"
                 tickLine={false}
-                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
-                tick={{ fontSize: 12, fill: '#94a3b8' }}
+                axisLine={{ stroke: '#EEDBBB' }}
+                tick={{ fontSize: 12, fill: '#5C4F3D', fontWeight: 500 }}
                 dy={6}
               />
               <YAxis
                 domain={['auto', 'auto']}
-                stroke="#64748b"
+                stroke="#8C7B64"
                 tickLine={false}
-                axisLine={false}
-                tick={{ fontSize: 12, fill: '#94a3b8' }}
+                axisLine={{ stroke: '#EEDBBB' }}
+                tick={{ fontSize: 12, fill: '#5C4F3D', fontWeight: 500 }}
                 tickFormatter={(val) => `₹${val >= 1000 ? (val >= 100000 ? `${(val/100000).toFixed(1)}L` : `${Math.round(val)}`) : val}`}
                 orientation="right"
                 dx={6}
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                  border: '1px solid rgba(99, 102, 241, 0.3)',
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #EEDBBB',
                   borderRadius: '10px',
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-                  color: '#f8fafc',
+                  boxShadow: '0 8px 24px rgba(140, 123, 100, 0.15)',
+                  color: '#1A1610',
                   padding: '10px 14px'
                 }}
                 formatter={(value) => [`₹${Number(value).toLocaleString()}`, 'Close Price']}
-                labelStyle={{ color: '#94a3b8', marginBottom: '4px', fontSize: '12px' }}
+                labelStyle={{ color: '#5C4F3D', marginBottom: '4px', fontSize: '12px' }}
               />
               <Area
                 type="monotone"
                 dataKey="price"
-                stroke={tickerQuote?.isPositive !== false ? '#818cf8' : '#f87171'}
+                stroke={tickerQuote?.isPositive !== false ? '#B8860B' : '#B91C1C'}
                 strokeWidth={2.5}
                 fillOpacity={1}
                 fill="url(#colorPrice)"
@@ -619,16 +619,17 @@ const Dashboard = () => {
                   dataKey="value"
                 >
                   {allocationPieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} stroke="rgba(10, 14, 26, 0.8)" strokeWidth={2} />
+                    <Cell key={`cell-${index}`} fill={entry.color} stroke="#FFFFFF" strokeWidth={2} />
                   ))}
                 </Pie>
                 <Tooltip
                   formatter={(val, name) => [`${val}%`, name]}
                   contentStyle={{
-                    backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid #EEDBBB',
                     borderRadius: '8px',
-                    color: '#fff'
+                    color: '#1A1610',
+                    boxShadow: '0 8px 24px rgba(140, 123, 100, 0.15)'
                   }}
                 />
               </PieChart>
@@ -693,27 +694,28 @@ const Dashboard = () => {
           <div className="projection-chart-wrap">
             <ResponsiveContainer width="100%" height={210}>
               <BarChart data={wealthProjectionData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                <XAxis dataKey="year" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                <XAxis dataKey="year" stroke="#EEDBBB" tick={{ fill: '#5C4F3D', fontSize: 12, fontWeight: 500 }} />
                 <YAxis
-                  stroke="#64748b"
-                  tick={{ fill: '#94a3b8', fontSize: 11 }}
+                  stroke="#EEDBBB"
+                  tick={{ fill: '#5C4F3D', fontSize: 11, fontWeight: 500 }}
                   tickFormatter={(val) => `₹${(val / 100000).toFixed(0)}L`}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid #EEDBBB',
                     borderRadius: '8px',
-                    color: '#fff'
+                    color: '#1A1610',
+                    boxShadow: '0 8px 24px rgba(140, 123, 100, 0.15)'
                   }}
                   formatter={(value, name) => [`₹${(Number(value) / 100000).toFixed(2)} Lakhs`, name === 'invested' ? 'Total Invested' : 'Est. Growth Value']}
                 />
                 <Legend
-                  wrapperStyle={{ paddingTop: '8px', fontSize: '12px' }}
+                  wrapperStyle={{ paddingTop: '8px', fontSize: '12px', color: '#5C4F3D' }}
                   formatter={(val) => (val === 'invested' ? 'Principal Invested' : 'Wealth Compounded')}
                 />
-                <Bar dataKey="invested" fill="#475569" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="returns" fill="#10b981" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="invested" fill="#C69234" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="returns" fill="#047857" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

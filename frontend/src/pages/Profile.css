@@ -1,19 +1,19 @@
 .profile-page {
   max-width: 800px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 36px 24px 60px;
 }
 
 .profile-header-title {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 .profile-header-title h1 {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 30px;
+  font-weight: 800;
   background: var(--accent-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -24,13 +24,19 @@
 .success-message {
   background: var(--success-bg);
   color: var(--success);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(4, 120, 87, 0.25);
   padding: 14px 20px;
   border-radius: var(--radius);
   margin-bottom: 24px;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
   animation: slideDown 0.3s ease;
+}
+
+.success-message.error {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: rgba(185, 28, 28, 0.25);
 }
 
 @keyframes slideDown {
@@ -41,8 +47,9 @@
 .profile-form {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 32px;
+  border-radius: var(--radius-xl);
+  padding: 36px;
+  box-shadow: var(--shadow);
 }
 
 .form-row {
@@ -59,7 +66,7 @@
   display: block;
   color: var(--text-secondary);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
   margin-bottom: 8px;
   letter-spacing: 0.3px;
 }
@@ -74,19 +81,21 @@
   color: var(--text-primary);
   font-size: 15px;
   font-family: inherit;
+  font-weight: 500;
   transition: var(--transition);
   outline: none;
+  box-shadow: var(--shadow-sm);
 }
 
 .form-group select option {
-  background: var(--bg-secondary);
+  background: #FFFFFF;
   color: var(--text-primary);
 }
 
 .form-group input:focus,
 .form-group select:focus {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15);
 }
 
 .checkbox-group {
@@ -100,7 +109,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  background: var(--glass);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   cursor: pointer;
@@ -108,8 +117,13 @@
 }
 
 .checkbox-item:hover {
-  background: rgba(99, 102, 241, 0.06);
-  border-color: var(--border-hover);
+  background: var(--bg-secondary);
+  border-color: var(--accent-primary);
+}
+
+.checkbox-item.active {
+  background: var(--bg-secondary);
+  border-color: var(--accent-primary);
 }
 
 .checkbox-item input[type="checkbox"] {
@@ -119,32 +133,32 @@
   cursor: pointer;
 }
 
-.checkbox-item label {
-  color: var(--text-secondary);
+.checkbox-item span {
+  color: var(--text-primary);
   font-size: 13px;
-  cursor: pointer;
-  margin-bottom: 0;
+  font-weight: 600;
 }
 
 .btn-submit {
   width: 100%;
   padding: 14px;
   background: var(--accent-gradient);
-  color: white;
+  color: #FFFFFF;
   border: none;
   border-radius: var(--radius);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
   font-family: inherit;
   letter-spacing: 0.3px;
   margin-top: 8px;
+  box-shadow: var(--accent-glow);
 }
 
 .btn-submit:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--accent-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(184, 134, 11, 0.45);
 }
 
 .btn-submit:disabled {
@@ -154,27 +168,21 @@
 }
 
 .profile-footer {
-  margin-top: 40px;
-  padding-top: 32px;
-  border-top: 1px solid var(--border);
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border-light);
   text-align: center;
-}
-
-.footer-note {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 16px;
 }
 
 .btn-logout-alt {
   width: 100%;
   padding: 12px;
-  background: rgba(239, 68, 68, 0.08);
+  background: var(--danger-bg);
   color: var(--danger);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(185, 28, 28, 0.2);
   border-radius: var(--radius);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
   display: flex;
@@ -184,8 +192,12 @@
 }
 
 .btn-logout-alt:hover {
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(185, 28, 28, 0.15);
   border-color: var(--danger);
   transform: translateY(-1px);
 }
 
+@media (max-width: 600px) {
+  .form-row { grid-template-columns: 1fr; }
+  .profile-form { padding: 24px 18px; }
+}

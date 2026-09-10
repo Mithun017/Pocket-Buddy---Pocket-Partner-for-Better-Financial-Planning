@@ -4,9 +4,12 @@
   align-items: center;
   justify-content: center;
   background: var(--bg-primary);
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(249, 241, 215, 0.85) 0px, transparent 50%),
+    radial-gradient(at 85% 85%, rgba(238, 219, 187, 0.6) 0px, transparent 50%);
   position: relative;
   overflow: hidden;
-  padding: 20px;
+  padding: 24px;
 }
 
 .login-container::before {
@@ -14,7 +17,7 @@
   position: absolute;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%);
+  background: radial-gradient(circle, rgba(184, 134, 11, 0.15), transparent 70%);
   top: -200px;
   right: -200px;
   border-radius: 50%;
@@ -25,23 +28,22 @@
   position: absolute;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.1), transparent 70%);
+  background: radial-gradient(circle, rgba(198, 146, 52, 0.12), transparent 70%);
   bottom: -200px;
   left: -200px;
   border-radius: 50%;
 }
 
 .login-box {
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
+  background: #FFFFFF;
+  border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 48px 40px;
   width: 100%;
   max-width: 440px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 20px 50px rgba(140, 123, 100, 0.18);
   position: relative;
   z-index: 1;
-  backdrop-filter: blur(20px);
 }
 
 .login-box h1 {
@@ -53,23 +55,26 @@
   background-clip: text;
   margin-bottom: 8px;
   text-align: center;
+  letter-spacing: -0.02em;
 }
 
 .login-box > p {
   color: var(--text-secondary);
   text-align: center;
   font-size: 14px;
+  font-weight: 500;
   margin-bottom: 32px;
 }
 
 .error-message {
   background: var(--danger-bg);
   color: var(--danger);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(185, 28, 28, 0.25);
   padding: 12px 16px;
   border-radius: var(--radius);
   margin-bottom: 20px;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   text-align: center;
 }
 
@@ -81,7 +86,7 @@
   display: block;
   color: var(--text-secondary);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
   margin-bottom: 8px;
   letter-spacing: 0.3px;
 }
@@ -90,12 +95,13 @@
 .form-group select {
   width: 100%;
   padding: 12px 16px;
-  background: var(--bg-input);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--text-primary);
   font-size: 15px;
   font-family: inherit;
+  font-weight: 500;
   transition: var(--transition);
   outline: none;
 }
@@ -103,7 +109,8 @@
 .form-group input:focus,
 .form-group select:focus {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15);
 }
 
 .form-group input::placeholder {
@@ -114,21 +121,22 @@
   width: 100%;
   padding: 14px;
   background: var(--accent-gradient);
-  color: white;
+  color: #FFFFFF;
   border: none;
   border-radius: var(--radius);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
   font-family: inherit;
   letter-spacing: 0.3px;
   margin-top: 8px;
+  box-shadow: var(--accent-glow);
 }
 
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--accent-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(184, 134, 11, 0.45);
 }
 
 .btn-primary:disabled {
@@ -142,19 +150,25 @@
   margin-top: 24px;
   color: var(--text-secondary);
   font-size: 14px;
+  font-weight: 500;
 }
 
 .toggle-mode button {
   background: none;
   border: none;
-  color: var(--accent-secondary);
+  color: var(--accent-primary);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
   transition: var(--transition);
 }
 
 .toggle-mode button:hover {
-  color: var(--accent-primary);
+  color: var(--accent-secondary);
   text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .login-box { padding: 32px 24px; }
+  .login-box h1 { font-size: 28px; }
 }

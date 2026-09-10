@@ -86,7 +86,7 @@ const Profile = () => {
   return (
     <div className="profile-page">
       <div className="profile-header-title">
-        <IconUser size={24} color="#6366f1" />
+        <IconUser size={24} color="#B8860B" />
         <h1>My Financial Profile</h1>
       </div>
       

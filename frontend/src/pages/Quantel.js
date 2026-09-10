@@ -21,7 +21,13 @@ import {
   IconGlobe, 
   IconNewspaper,
   IconBrain,
-  IconTrendingUp
+  IconTrendingUp,
+  IconShield,
+  IconZap,
+  IconSliders,
+  IconCheckCircle,
+  IconTarget,
+  IconLayers
 } from '../components/Icons';
 import './Quantel.css';
 
@@ -247,7 +253,7 @@ const Quantel = () => {
                   <div className="movers-section quant-card">
                     <div className="movers-header">
                       <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <IconBarChart size={18} color="#6366f1" /> Market Movers
+                        <IconBarChart size={18} color="#B8860B" /> Market Movers
                       </h3>
                       <div className="mover-toggles">
                         <button 
@@ -395,50 +401,204 @@ const Quantel = () => {
               </div>
             )}
 
-            {activeTab === 'technicals' && (
-              <div className="technicals-pane">
-                <div className="indicators-grid">
-                  <div className="quant-card indicator-box">
-                    <h3>Momentum (RSI)</h3>
-                    <div className="indicator-value">
-                      <span className="big-val">{technicals?.rsi}</span>
-                      <span className={`status-pill ${technicals?.rsi > 70 ? 'danger' : technicals?.rsi < 30 ? 'success' : 'neutral'}`}>
-                        {technicals?.rsi > 70 ? 'Overbought' : technicals?.rsi < 30 ? 'Oversold' : 'Neutral'}
-                      </span>
+            {activeTab === 'technicals' && (() => {
+              // Calculate trade confirmations
+              const rsi = technicals?.rsi || 50;
+              const macd = technicals?.macd || 0;
+              const macdSig = technicals?.macd_signal || 0;
+              const trend = technicals?.trend || 'neutral';
+              const bbPct = technicals?.bb_percent ?? 50;
+              const stochK = technicals?.stoch_k ?? 50;
+              const stochD = technicals?.stoch_d ?? 50;
+              const stDir = technicals?.supertrend_direction || 'bullish';
+
+              const confirmations = [
+                { name: 'RSI Momentum', isBullish: rsi >= 40 && rsi <= 65, isBearish: rsi > 70 || rsi < 30, state: rsi > 70 ? 'Overbought' : rsi < 30 ? 'Oversold' : rsi >= 50 ? 'Bullish Expansion' : 'Neutral' },
+                { name: 'MACD Crossover', isBullish: macd > macdSig, isBearish: macd <= macdSig, state: macd > macdSig ? 'Positive Crossover' : 'Negative Divergence' },
+                { name: 'MA Structure (20/50)', isBullish: trend === 'bullish', isBearish: trend === 'bearish', state: trend === 'bullish' ? 'Golden Alignment (SMA 20 > 50)' : 'Death Cross (SMA 20 < 50)' },
+                { name: 'Bollinger Bands (%B)', isBullish: bbPct > 20 && bbPct < 80, isBearish: bbPct >= 85, state: bbPct >= 85 ? 'Band Resistance / Stretched' : bbPct <= 15 ? 'Lower Band Support Bounce' : 'Channel Expansion' },
+                { name: 'Stochastic Reversal', isBullish: stochK > stochD, isBearish: stochK < stochD, state: (stochK < 20 && stochK > stochD) ? 'Oversold Bullish Cross' : stochK > stochD ? 'Positive Momentum (%K > %D)' : 'Bearish Pressure' },
+                { name: 'SuperTrend (10, 3)', isBullish: stDir === 'bullish', isBearish: stDir === 'bearish', state: stDir === 'bullish' ? `BUY • Trailing Support at ₹${technicals?.supertrend}` : `SELL • Resistance at ₹${technicals?.supertrend}` }
+              ];
+
+              const bullishCount = confirmations.filter(c => c.isBullish).length;
+              const bearishCount = confirmations.filter(c => c.isBearish).length;
+              const isConfirmedBuy = bullishCount >= 4;
+              const isConfirmedSell = bearishCount >= 4;
+
+              return (
+                <div className="technicals-pane">
+                  {/* Trade Confirmation Confluence Banner */}
+                  <div className={`trade-confirmation-banner quant-card ${isConfirmedBuy ? 'confirmed-buy' : isConfirmedSell ? 'confirmed-sell' : 'confirmed-neutral'}`}>
+                    <div className="tcb-header">
+                      <div className="tcb-icon-wrap">
+                        {isConfirmedBuy ? <IconCheckCircle size={24} color="#10b981" /> : isConfirmedSell ? <IconShield size={24} color="#ef4444" /> : <IconZap size={24} color="#f59e0b" />}
+                      </div>
+                      <div className="tcb-text-block">
+                        <h4>
+                          {isConfirmedBuy ? 'TRADE CONFIRMED: HIGH-PROBABILITY BULLISH SETUP' : isConfirmedSell ? 'TRADE WARNING: HIGH-PROBABILITY BEARISH BREAKDOWN' : 'TRADE INDECISION: CONSOLIDATION & RANGEBOUND MARKET'}
+                        </h4>
+                        <p>
+                          {isConfirmedBuy 
+                            ? `${bullishCount} of 6 institutional indicators signal strong upside confluence with momentum alignment.`
+                            : isConfirmedSell 
+                            ? `${bearishCount} of 6 indicators warn of heavy distribution pressure. Long trades carry elevated risk.`
+                            : 'Mixed technical signals detected. Wait for a definitive breakout confirmation before entering.'}
+                        </p>
+                      </div>
                     </div>
-                    <p className="desc">Relative Strength Index (14-day window)</p>
+                    <div className="tcb-score-badge">
+                      <span className="tcb-score-label">CONFLUENCE SCORE</span>
+                      <span className="tcb-score-val">{bullishCount} / 6 BULLISH</span>
+                    </div>
                   </div>
 
-                  <div className="quant-card indicator-box">
-                    <h3>Trend (MACD)</h3>
-                    <div className="indicator-value">
-                      <span className="big-val">{technicals?.macd?.toFixed(2)}</span>
-                      <span className={`status-pill ${technicals?.macd > technicals?.macd_signal ? 'success' : 'danger'}`}>
-                        {technicals?.macd > technicals?.macd_signal ? 'Bullish Crossover' : 'Bearish Crossover'}
-                      </span>
+                  {/* 6 Grid Indicator Cards */}
+                  <div className="indicators-grid-expanded">
+                    {/* 1. Momentum RSI */}
+                    <div className="quant-card indicator-box">
+                      <div className="ind-header-flex">
+                        <h3>Momentum (RSI)</h3>
+                        <span className="ind-sub-badge">14-DAY</span>
+                      </div>
+                      <div className="indicator-value">
+                        <span className="big-val">{technicals?.rsi}</span>
+                        <span className={`status-pill ${technicals?.rsi > 70 ? 'danger' : technicals?.rsi < 30 ? 'success' : 'neutral'}`}>
+                          {technicals?.rsi > 70 ? 'Overbought (>70)' : technicals?.rsi < 30 ? 'Oversold (<30)' : 'Neutral Zone'}
+                        </span>
+                      </div>
+                      <p className="desc">Relative Strength Index measures speed and magnitude of price changes.</p>
                     </div>
-                    <p className="desc">Moving Average Convergence Divergence</p>
-                  </div>
 
-                  <div className="quant-card indicator-box">
-                    <h3>Moving Averages</h3>
-                    <div className="ma-rows">
-                      <div className="ma-row">
-                        <span>SMA 20</span>
-                        <span className="val">₹{technicals?.sma_20}</span>
+                    {/* 2. Trend MACD */}
+                    <div className="quant-card indicator-box">
+                      <div className="ind-header-flex">
+                        <h3>Trend (MACD)</h3>
+                        <span className="ind-sub-badge">12 / 26 / 9</span>
                       </div>
-                      <div className="ma-row">
-                        <span>SMA 50</span>
-                        <span className="val">₹{technicals?.sma_50}</span>
+                      <div className="indicator-value">
+                        <span className="big-val">{technicals?.macd?.toFixed(2)}</span>
+                        <span className={`status-pill ${technicals?.macd > technicals?.macd_signal ? 'success' : 'danger'}`}>
+                          {technicals?.macd > technicals?.macd_signal ? 'Bullish Crossover' : 'Bearish Crossover'}
+                        </span>
                       </div>
+                      <div className="macd-sub-vals">
+                        <span>Signal Line: <strong>{technicals?.macd_signal?.toFixed(2)}</strong></span>
+                        <span>Histogram: <strong className={technicals?.macd_hist >= 0 ? 'highlight-emerald' : 'highlight-danger'}>{technicals?.macd_hist > 0 ? '+' : ''}{technicals?.macd_hist?.toFixed(2)}</strong></span>
+                      </div>
+                      <p className="desc">Moving Average Convergence Divergence trend direction.</p>
                     </div>
-                    <div className={`trend-flag ${technicals?.trend}`}>
-                      TREND: {technicals?.trend?.toUpperCase()}
+
+                    {/* 3. Moving Averages */}
+                    <div className="quant-card indicator-box">
+                      <div className="ind-header-flex">
+                        <h3>Moving Averages</h3>
+                        <span className="ind-sub-badge">SMA 20 & 50</span>
+                      </div>
+                      <div className="ma-rows">
+                        <div className="ma-row">
+                          <span>SMA 20 (Short-Term)</span>
+                          <span className="val">₹{technicals?.sma_20}</span>
+                        </div>
+                        <div className="ma-row">
+                          <span>SMA 50 (Medium-Term)</span>
+                          <span className="val">₹{technicals?.sma_50}</span>
+                        </div>
+                      </div>
+                      <div className={`trend-flag ${technicals?.trend}`}>
+                        TREND: {technicals?.trend?.toUpperCase()}
+                      </div>
+                      <p className="desc">Price baseline vs short-term and medium-term institutional averages.</p>
+                    </div>
+
+                    {/* 4. Bollinger Bands (NEW) */}
+                    <div className="quant-card indicator-box">
+                      <div className="ind-header-flex">
+                        <h3>Bollinger Bands (%B)</h3>
+                        <span className="ind-sub-badge">20, 2 STD</span>
+                      </div>
+                      <div className="ma-rows">
+                        <div className="ma-row">
+                          <span>Upper Band (Resistance)</span>
+                          <span className="val highlight-danger">₹{technicals?.bb_upper}</span>
+                        </div>
+                        <div className="ma-row">
+                          <span>Lower Band (Support)</span>
+                          <span className="val highlight-emerald">₹{technicals?.bb_lower}</span>
+                        </div>
+                      </div>
+                      <div className="indicator-value" style={{ marginTop: '8px' }}>
+                        <div className="bb-position-bar">
+                          <div className="bb-position-marker" style={{ left: `${Math.min(100, Math.max(0, technicals?.bb_percent || 50))}%` }}></div>
+                        </div>
+                        <span className={`status-pill ${technicals?.bb_percent >= 85 ? 'danger' : technicals?.bb_percent <= 15 ? 'success' : 'neutral'}`}>
+                          {technicals?.bb_percent >= 85 ? 'Near Upper Band (Overextended)' : technicals?.bb_percent <= 15 ? 'Lower Band Support Bounce' : `In Channel (${technicals?.bb_percent || 50}%B)`}
+                        </span>
+                      </div>
+                      <p className="desc">Measures price volatility envelope and statistical extremes.</p>
+                    </div>
+
+                    {/* 5. Stochastic Oscillator (NEW) */}
+                    <div className="quant-card indicator-box">
+                      <div className="ind-header-flex">
+                        <h3>Stochastic Oscillator</h3>
+                        <span className="ind-sub-badge">14, 3, 3</span>
+                      </div>
+                      <div className="ma-rows">
+                        <div className="ma-row">
+                          <span>Fast Line (%K)</span>
+                          <span className="val highlight-cyan">{technicals?.stoch_k}</span>
+                        </div>
+                        <div className="ma-row">
+                          <span>Slow Signal (%D)</span>
+                          <span className="val">{technicals?.stoch_d}</span>
+                        </div>
+                      </div>
+                      <div className="indicator-value" style={{ marginTop: '8px' }}>
+                        <span className={`status-pill ${technicals?.stoch_k > technicals?.stoch_d ? 'success' : 'danger'}`}>
+                          {(technicals?.stoch_k < 20 && technicals?.stoch_k > technicals?.stoch_d)
+                            ? 'Oversold Bullish Turn (<20)'
+                            : (technicals?.stoch_k > 80 && technicals?.stoch_k < technicals?.stoch_d)
+                            ? 'Overbought Bearish Turn (>80)'
+                            : technicals?.stoch_k > technicals?.stoch_d
+                            ? 'Bullish Momentum (%K > %D)'
+                            : 'Bearish Momentum (%K < %D)'}
+                        </span>
+                      </div>
+                      <p className="desc">High-speed turning point and cycle reversal momentum detector.</p>
+                    </div>
+
+                    {/* 6. SuperTrend & ATR Volatility (NEW) */}
+                    <div className="quant-card indicator-box">
+                      <div className="ind-header-flex">
+                        <h3>SuperTrend & ATR</h3>
+                        <span className="ind-sub-badge">10, 3 (ATR 14)</span>
+                      </div>
+                      <div className="ma-rows">
+                        <div className="ma-row">
+                          <span>SuperTrend Anchor</span>
+                          <span className={`val ${technicals?.supertrend_direction === 'bullish' ? 'highlight-emerald' : 'highlight-danger'}`}>
+                            ₹{technicals?.supertrend}
+                          </span>
+                        </div>
+                        <div className="ma-row">
+                          <span>Daily Volatility (ATR)</span>
+                          <span className="val">±₹{technicals?.atr_14}</span>
+                        </div>
+                      </div>
+                      <div className="indicator-value" style={{ marginTop: '8px' }}>
+                        <span className={`status-pill ${technicals?.supertrend_direction === 'bullish' ? 'success' : 'danger'}`}>
+                          {technicals?.supertrend_direction === 'bullish' 
+                            ? 'BUY • Trailing Support Active' 
+                            : 'SELL • Overhead Resistance Active'}
+                        </span>
+                      </div>
+                      <p className="desc">Dynamic trend-following trailing stop and volatility boundary.</p>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             {activeTab === 'fundamentals' && (
               <div className="fundamentals-pane">
@@ -461,14 +621,14 @@ const Quantel = () => {
                       <ResponsiveContainer>
                         <BarChart data={shareholding} layout="vertical">
                           <XAxis type="number" hide />
-                          <YAxis dataKey="label" type="category" width={100} tick={{ fill: '#94a3b8' }} />
+                          <YAxis dataKey="label" type="category" width={100} tick={{ fill: '#5C4F3D' }} />
                           <Tooltip 
-                            cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                            contentStyle={{ background: '#1e293b', border: 'none', borderRadius: '8px' }}
+                            cursor={{ fill: 'rgba(184, 134, 11, 0.08)' }}
+                            contentStyle={{ background: '#FFFFFF', border: '1px solid #EEDBBB', borderRadius: '8px', color: '#1A1610' }}
                           />
                           <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                             {shareholding?.map((entry, index) => (
-                              <Cell key={index} fill={['#6366f1', '#10b981', '#f59e0b', '#ef4444'][index % 4]} />
+                              <Cell key={index} fill={['#B8860B', '#047857', '#C69234', '#DC2626'][index % 4]} />
                             ))}
                           </Bar>
                         </BarChart>
@@ -539,11 +699,11 @@ const Quantel = () => {
                                     dataKey="value"
                                   >
                                     {Object.entries(optimization.weights).map((entry, index) => (
-                                      <Cell key={`cell-${index}`} fill={['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#ef4444'][index % 5]} />
+                                      <Cell key={`cell-${index}`} fill={['#B8860B', '#047857', '#C69234', '#0284C7', '#8B5CF6'][index % 5]} />
                                     ))}
                                   </Pie>
                                   <Tooltip 
-                                    contentStyle={{ background: '#1e293b', border: 'none', borderRadius: '12px', color: 'white' }}
+                                    contentStyle={{ background: '#FFFFFF', border: '1px solid #EEDBBB', borderRadius: '12px', color: '#1A1610', boxShadow: '0 8px 24px rgba(140, 123, 100, 0.15)' }}
                                     formatter={(value) => `${(value * 100).toFixed(2)}%`}
                                   />
                                   <Legend verticalAlign="bottom" height={36}/>
@@ -647,7 +807,7 @@ const Quantel = () => {
                 <div className="news-pane-header">
                   <div>
                     <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <IconNewspaper size={18} color="#6366f1" /> Real-Time Company & Market News
+                      <IconNewspaper size={18} color="#B8860B" /> Real-Time Company & Market News
                     </h3>
                     <p className="news-pane-sub">Live intelligence, corporate actions, and analyst coverage for {summary?.name || symbol}</p>
                   </div>

@@ -42,15 +42,15 @@ import './Recommendations.css';
 const API_URL = 'http://localhost:8000';
 
 const ASSET_COLORS = {
-  stocks: '#6366f1',
-  equity: '#6366f1',
-  mutual_funds: '#10b981',
-  bonds: '#f59e0b',
-  debt_funds: '#f59e0b',
-  liquid: '#06b6d4',
-  liquid_funds: '#06b6d4',
-  gold: '#ec4899',
-  real_estate: '#8b5cf6'
+  stocks: '#B8860B',
+  equity: '#B8860B',
+  mutual_funds: '#047857',
+  bonds: '#C69234',
+  debt_funds: '#C69234',
+  liquid: '#0284C7',
+  liquid_funds: '#0284C7',
+  gold: '#D4AF37',
+  real_estate: '#8C7B64'
 };
 
 const DETAILED_INSTRUMENTS = [
@@ -248,7 +248,7 @@ const Recommendations = () => {
           <IconArrowRight size={14} style={{ transform: 'rotate(180deg)' }} /> Back to Dashboard
         </Link>
         <div className="no-profile-card">
-          <IconBrain size={48} color="#6366f1" />
+          <IconBrain size={48} color="#B8860B" />
           <h2>Financial Profile Required</h2>
           <p>Complete your investment horizon, income and risk preferences to unlock personalized AI portfolio recommendations.</p>
           <Link to="/profile" className="btn-primary-action">
@@ -280,7 +280,7 @@ const Recommendations = () => {
           <IconArrowRight size={14} style={{ transform: 'rotate(180deg)' }} /> Dashboard
         </Link>
         <div className="rec-engine-tag">
-          <IconSparkles size={14} color="#6366f1" />
+          <IconSparkles size={14} color="#B8860B" />
           <span>AI Advisory Engine v2.4 • Active</span>
         </div>
       </div>
@@ -375,14 +375,14 @@ const Recommendations = () => {
                       {pieData.map((entry, index) => (
                         <Cell 
                           key={`cell-${index}`} 
-                          fill={ASSET_COLORS[entry.key] || ['#6366f1', '#10b981', '#f59e0b', '#06b6d4', '#ec4899'][index % 5]} 
+                          fill={ASSET_COLORS[entry.key] || ['#B8860B', '#047857', '#C69234', '#0284C7', '#8B5CF6'][index % 5]} 
                           stroke="rgba(0,0,0,0.4)"
                           strokeWidth={2}
                         />
                       ))}
                     </Pie>
                     <Tooltip 
-                      contentStyle={{ background: '#121829', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff' }}
+                      contentStyle={{ background: '#FFFFFF', border: '1px solid #EEDBBB', borderRadius: '10px', color: '#1A1610', boxShadow: '0 8px 24px rgba(140, 123, 100, 0.15)' }}
                       formatter={(val) => [`${val}%`, 'Target Allocation']}
                     />
                   </PieChart>
@@ -394,7 +394,7 @@ const Recommendations = () => {
                   <div key={idx} className="legend-item">
                     <span 
                       className="legend-dot" 
-                      style={{ background: ASSET_COLORS[item.key] || '#6366f1' }}
+                      style={{ background: ASSET_COLORS[item.key] || '#B8860B' }}
                     ></span>
                     <span className="legend-name">{item.name}</span>
                     <span className="legend-pct">{item.value}%</span>
@@ -415,7 +415,7 @@ const Recommendations = () => {
               <div className="asset-rows-container">
                 {Object.entries(allocation).map(([asset, percentage]) => {
                   const key = asset.toLowerCase();
-                  const color = ASSET_COLORS[key] || '#6366f1';
+                  const color = ASSET_COLORS[key] || '#B8860B';
                   let description = 'Generates compounding wealth with medium risk.';
                   if (key.includes('stock') || key.includes('equity')) description = 'Engine of capital growth and inflation-beating appreciation.';
                   if (key.includes('bond') || key.includes('debt')) description = 'Stabilizes portfolio against market volatility and provides coupon income.';
@@ -450,7 +450,7 @@ const Recommendations = () => {
             <div className="rec-card glass-panel">
               <div className="card-header-flex">
                 <div className="icon-title">
-                  <IconShield size={20} color="#6366f1" />
+                  <IconShield size={20} color="#B8860B" />
                   <h3>Diversification Architecture</h3>
                 </div>
                 <span className="status-badge-emerald">{rule_based?.diversification_strategy?.strategy?.toUpperCase()}</span>
@@ -521,7 +521,7 @@ const Recommendations = () => {
           <div className="rec-card glass-panel sim-controls-card">
             <div className="card-header-flex">
               <div className="icon-title">
-                <IconCalculator size={20} color="#6366f1" />
+                <IconCalculator size={20} color="#B8860B" />
                 <h3>Interactive SIP & Compounding Engine</h3>
               </div>
               <div className="inflation-toggle-wrap">
@@ -697,33 +697,33 @@ const Recommendations = () => {
                 <AreaChart data={simulationData} margin={{ top: 10, right: 20, left: 20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorWealth" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.0}/>
+                      <stop offset="5%" stopColor="#047857" stopOpacity={0.35}/>
+                      <stop offset="95%" stopColor="#047857" stopOpacity={0.0}/>
                     </linearGradient>
                     <linearGradient id="colorInvested" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0}/>
+                      <stop offset="5%" stopColor="#B8860B" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#B8860B" stopOpacity={0.0}/>
                     </linearGradient>
                     <linearGradient id="colorReal" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.0}/>
+                      <stop offset="5%" stopColor="#0284C7" stopOpacity={0.25}/>
+                      <stop offset="95%" stopColor="#0284C7" stopOpacity={0.0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                  <XAxis dataKey="year" stroke="#64748b" tick={{ fill: '#94a3b8' }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(184, 134, 11, 0.12)" />
+                  <XAxis dataKey="year" stroke="#8C7B64" tick={{ fill: '#5C4F3D', fontSize: 12, fontWeight: 600 }} />
                   <YAxis 
-                    stroke="#64748b" 
-                    tick={{ fill: '#94a3b8' }}
+                    stroke="#8C7B64" 
+                    tick={{ fill: '#5C4F3D', fontSize: 12, fontWeight: 600 }}
                     tickFormatter={(val) => val >= 10000000 ? `₹${(val/10000000).toFixed(1)}Cr` : `₹${(val/100000).toFixed(0)}L`}
                   />
                   <Tooltip 
-                    contentStyle={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
+                    contentStyle={{ background: '#FFFFFF', border: '1px solid #EEDBBB', borderRadius: '12px', color: '#1A1610', boxShadow: '0 10px 30px rgba(140, 123, 100, 0.15)' }}
                     formatter={(value) => [`₹${value.toLocaleString()}`, '']}
                   />
-                  <Area type="monotone" dataKey="invested" name="Invested Principal" stroke="#6366f1" strokeWidth={2} fillOpacity={1} fill="url(#colorInvested)" />
-                  <Area type="monotone" dataKey="wealth" name="Total Portfolio" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorWealth)" />
+                  <Area type="monotone" dataKey="invested" name="Invested Principal" stroke="#B8860B" strokeWidth={2.5} fillOpacity={1} fill="url(#colorInvested)" />
+                  <Area type="monotone" dataKey="wealth" name="Total Portfolio" stroke="#047857" strokeWidth={3} fillOpacity={1} fill="url(#colorWealth)" />
                   {adjustInflation && (
-                    <Area type="monotone" dataKey="realWealth" name="Real Wealth (Post-Inflation)" stroke="#06b6d4" strokeWidth={2} strokeDasharray="5 5" fillOpacity={1} fill="url(#colorReal)" />
+                    <Area type="monotone" dataKey="realWealth" name="Real Wealth (Post-Inflation)" stroke="#0284C7" strokeWidth={2} strokeDasharray="5 5" fillOpacity={1} fill="url(#colorReal)" />
                   )}
                 </AreaChart>
               </ResponsiveContainer>
@@ -921,7 +921,7 @@ const Recommendations = () => {
             <div className="rec-card glass-panel">
               <div className="card-header-flex">
                 <div className="icon-title">
-                  <IconShield size={20} color="#6366f1" />
+                  <IconShield size={20} color="#B8860B" />
                   <h3>Emergency Buffer & Capital Defense</h3>
                 </div>
               </div>

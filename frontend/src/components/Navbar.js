@@ -38,7 +38,7 @@ const Navbar = () => {
       <div className="navbar-inner">
         <Link to="/dashboard" className="navbar-brand" onClick={() => setIsDropdownOpen(false)}>
           <span className="brand-icon">
-            <IconLogo size={22} color="#6366f1" />
+            <IconLogo size={22} color="#FFFFFF" />
           </span>
           <span className="brand-text">Pocket Buddy</span>
         </Link>
