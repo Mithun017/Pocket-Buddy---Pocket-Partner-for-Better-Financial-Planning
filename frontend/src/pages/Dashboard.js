@@ -279,8 +279,7 @@ const Dashboard = () => {
           <div className="badge-live-pulse">
             <span className="pulse-dot"></span> LIVE FINANCIAL DASHBOARD
           </div>
-          <h1>Command Center</h1>
-          <p>Welcome back, <strong>{user?.full_name || 'Investor'}</strong>! Here is your personalized wealth & market pulse.</p>
+          <p className="dashboard-welcome-text">Welcome back, <strong>{user?.full_name || 'Investor'}</strong>! Here is your personalized wealth & market pulse.</p>
         </div>
         <div className="header-actions">
           <Link to="/quantel" className="btn-glow-primary">

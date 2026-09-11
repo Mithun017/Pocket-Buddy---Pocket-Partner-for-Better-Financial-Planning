@@ -1,22 +1,53 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#818cf8" />
-      <stop offset="50%" stop-color="#6366f1" />
-      <stop offset="100%" stop-color="#4f46e5" />
+    <!-- Luxury Gold Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C69234" />
+      <stop offset="35%" stop-color="#D4AF37" />
+      <stop offset="70%" stop-color="#B8860B" />
+      <stop offset="100%" stop-color="#8C6D23" />
     </linearGradient>
-    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#34d399" />
-      <stop offset="100%" stop-color="#10b981" />
+
+    <!-- Warm Highlight Gradient -->
+    <linearGradient id="goldGleam" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF5D6" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#D4AF37" stop-opacity="0" />
     </linearGradient>
+
+    <!-- Emerald Growth Gradient -->
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+
+    <!-- Drop Shadow Filter -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#5C4F3D" flood-opacity="0.25"/>
+    </filter>
   </defs>
-  <rect x="2" y="2" width="60" height="60" rx="16" fill="#0f172a" stroke="#6366f1" stroke-width="2" stroke-opacity="0.4" />
-  <g transform="translate(10, 12)">
-    <path d="M4 10C4 6.68629 6.68629 4 10 4H36C38.2091 4 40 5.79086 40 8V12H10C7.79086 12 6 13.7909 6 16C6 18.2091 7.79086 20 10 20H40V32C40 35.3137 37.3137 38 34 38H10C6.68629 38 4 35.3137 4 32V10Z" fill="url(#primaryGrad)" />
-    <path d="M4 10C4 6.68629 6.68629 4 10 4H36C38.2091 4 40 5.79086 40 8V12H10C7.79086 12 6 13.7909 6 16" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
-    <rect x="26" y="16" width="16" height="12" rx="4" fill="#0f172a" stroke="#818cf8" stroke-width="2" />
-    <circle cx="34" cy="22" r="2.5" fill="url(#accentGrad)" />
-    <path d="M12 28L18 22L22 25L28 17" fill="none" stroke="url(#accentGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <polyline points="23 17 28 17 28 22" fill="none" stroke="url(#accentGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Base Rounded Luxury Gold Tile -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#goldGrad)" stroke="#EFE0B7" stroke-width="1.5" filter="url(#shadow)" />
+  
+  <!-- Subtle Top Gleam Highlight -->
+  <rect x="4" y="4" width="56" height="26" rx="14" fill="url(#goldGleam)" />
+
+  <!-- Wallet & Growth Symbol Geometry -->
+  <g transform="translate(11, 13)">
+    <!-- Wallet Main Body (Crisp Pure White / Ivory) -->
+    <path d="M4 10C4 6.68629 6.68629 4 10 4H34C36.2091 4 38 5.79086 38 8V11H10C7.79086 11 6 12.7909 6 15C6 17.2091 7.79086 19 10 19H38V30C38 33.3137 35.3137 36 32 36H10C6.68629 36 4 33.3137 4 30V10Z" 
+          fill="#FFFFFF" />
+    
+    <!-- Top Flap Divider Line -->
+    <path d="M4 10C4 6.68629 6.68629 4 10 4H34C36.2091 4 38 5.79086 38 8V11H10C7.79086 11 6 12.7909 6 15" 
+          fill="none" stroke="#EEDBBB" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Gold Pocket Lock / Clasp -->
+    <rect x="25" y="14" width="15" height="12" rx="4" fill="url(#goldGrad)" stroke="#FFFFFF" stroke-width="1.5" />
+    <circle cx="32.5" cy="20" r="2.2" fill="#FFFFFF" />
+    
+    <!-- Emerald Upward Growth Trend Arrow -->
+    <path d="M11 27L17 21L21 24L26 16" fill="none" stroke="url(#emeraldGrad)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline points="21.5 16 26 16 26 20.5" fill="none" stroke="url(#emeraldGrad)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 </svg>
